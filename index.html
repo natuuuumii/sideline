@@ -12,9 +12,9 @@
     }
 
     button {
-      margin: 10px;
-      padding: 10px 20px;
-      font-size: 18px;
+      margin: 5px;
+      padding: 10px 15px;
+      font-size: 16px;
       border: none;
       background-color: #4CAF50;
       color: white;
@@ -26,67 +26,113 @@
       background-color: #45a049;
     }
 
-    #message {
-      margin-top: 20px;
+    #message, #finishMessage, #currentTrack {
+      margin-top: 15px;
       font-size: 16px;
       color: #333;
+    }
+
+    #finishMessage {
+      color: red;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
   <h1>🎶 ランダム音楽プレイヤー 🎶</h1>
 
-  <audio id="audioPlayer" controls style="margin-top: 20px;"></audio><br>
-  <button onclick="playRandom()">▶ 再生</button>
-  <button onclick="playNext()">⏭ 次へ</button>
+  <audio id="audioPlayer" controls style="margin-top: 20px; width: 80%;"></audio><br>
 
+  <button onclick="startPlaylist()">▶ 再生</button>
+  <button onclick="playNext()">⏭ 次へ</button>
+  <button onclick="playPrevious()">⏮ 戻る</button>
+  <button onclick="restartCurrent()">🔁 頭から</button>
+  <button onclick="resetPlaylist()">🔄 リセット</button>
+  <button onclick="rewind(5)">⏪ 5秒戻す</button>
+  <button onclick="forward(5)">⏩ 5秒進める</button>
+
+  <div id="currentTrack">現在再生中の曲: なし</div>
   <div id="message"></div>
+  <div id="finishMessage"></div>
 
   <script>
     const musicList = [
       "music/Oコール _ Jump.mp3",
       "music/Oコール _ Pitbull.mp3",
-      "music/Oコール _ DADDY.mp3.mp3"
+      "music/Oコール _ DADDY.mp3"
     ];
 
     let playedTracks = [];
+    let currentIndex = -1;
+    let playlistOrder = [];
+    const audioPlayer = document.getElementById("audioPlayer");
+    const messageDiv = document.getElementById("message");
+    const finishMessageDiv = document.getElementById("finishMessage");
+    const currentTrackDiv = document.getElementById("currentTrack");
 
-    function getRandomTrack() {
-      const remainingTracks = musicList.filter(track => !playedTracks.includes(track));
-      if (remainingTracks.length === 0) {
-        return null;
-      }
-      const randomIndex = Math.floor(Math.random() * remainingTracks.length);
-      return remainingTracks[randomIndex];
+    function shuffle(array) {
+      return array.sort(() => Math.random() - 0.5);
     }
 
-    function playRandom() {
-      const track = getRandomTrack();
-      const messageDiv = document.getElementById('message');
-      if (!track) {
-        messageDiv.innerText = "🎉 リストの曲すべてが終了しました 🎉";
-        messageDiv.innerHTML += '<br><button onclick="resetPlaylist()">再スタート</button>';
-        return;
-      }
-
-      playedTracks.push(track);
-      const audioPlayer = document.getElementById("audioPlayer");
-      audioPlayer.src = track;
-      audioPlayer.play();
-
-      messageDiv.innerText = `再生中: ${track}`;
+    function startPlaylist() {
+      resetPlaylist();
+      playlistOrder = shuffle([...musicList]);
+      playNext();
     }
 
     function playNext() {
-      playRandom();
+      if (currentIndex + 1 >= playlistOrder.length) {
+        finishMessageDiv.innerText = "Finish";
+        return;
+      }
+      currentIndex++;
+      playTrack(playlistOrder[currentIndex]);
+    }
+
+    function playPrevious() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        playTrack(playlistOrder[currentIndex]);
+      }
+    }
+
+    function restartCurrent() {
+      if (currentIndex >= 0) {
+        audioPlayer.currentTime = 0;
+        audioPlayer.play();
+      }
     }
 
     function resetPlaylist() {
       playedTracks = [];
-      const messageDiv = document.getElementById('message');
+      currentIndex = -1;
+      playlistOrder = [];
       messageDiv.innerText = "";
-      playRandom();  // 最初の曲を再生
+      finishMessageDiv.innerText = "";
+      currentTrackDiv.innerText = "現在再生中の曲: なし";
+      audioPlayer.pause();
+      audioPlayer.currentTime = 0;
+      audioPlayer.src = "";
     }
+
+    function playTrack(track) {
+      audioPlayer.src = track;
+      audioPlayer.play();
+      messageDiv.innerText = `再生中: ${track}`;
+      currentTrackDiv.innerText = `現在再生中の曲: ${track}`;
+    }
+
+    function rewind(seconds) {
+      audioPlayer.currentTime = Math.max(audioPlayer.currentTime - seconds, 0);
+    }
+
+    function forward(seconds) {
+      audioPlayer.currentTime = Math.min(audioPlayer.currentTime + seconds, audioPlayer.duration);
+    }
+
+    audioPlayer.onended = function() {
+      playNext();
+    };
   </script>
 </body>
 </html>
