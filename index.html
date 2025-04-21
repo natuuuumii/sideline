@@ -16,7 +16,7 @@
       padding: 10px 15px;
       font-size: 16px;
       border: none;
-      background-color: #4CAF50;
+      background-color: #4792b3;
       color: white;
       border-radius: 10px;
       cursor: pointer;
@@ -39,15 +39,14 @@
   </style>
 </head>
 <body>
-  <h1>🎶 ランダム音楽プレイヤー 🎶</h1>
+  <h1>🎶 BTC SIDELINEイントロドン 🎶</h1>
 
   <audio id="audioPlayer" controls style="margin-top: 20px; width: 80%;"></audio><br>
 
-  <button onclick="startPlaylist()">▶ 再生</button>
-  <button onclick="playNext()">⏭ 次へ</button>
-  <button onclick="playPrevious()">⏮ 戻る</button>
-  <button onclick="restartCurrent()">🔁 頭から</button>
-  <button onclick="resetPlaylist()">🔄 リセット</button>
+  <button onclick="startPlaylist()">▶ スタート</button>  <button onclick="resetPlaylist()">🔄 リセット</button><br>
+  <button onclick="playNext()">⏭ 次の曲</button>
+  <button onclick="playPrevious()">⏮ 前の曲</button>
+  <button onclick="restartCurrent()">🔁 この曲の頭から</button>
   <button onclick="rewind(5)">⏪ 5秒戻す</button>
   <button onclick="forward(5)">⏩ 5秒進める</button>
 
@@ -174,7 +173,6 @@
     function playTrack(track) {
       audioPlayer.src = track;
       audioPlayer.play();
-      messageDiv.innerText = `再生中: ${track}`;
       currentTrackDiv.innerText = `現在再生中の曲: ${track}`;
     }
 
