@@ -13,28 +13,38 @@
     }
 
     audio {
-      width: 90%;
-      max-width: 500px;
-      margin-top: 20px;
+    width: 90%;
+    max-width: 500px;
+    margin: 20px auto 0;
+    display: block;
     }
 
     .button-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
     }
 
+    .button-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    }
+
+
     button {
-      padding: 10px 15px;
-      font-size: 16px;
-      border: none;
-      color: white;
-      border-radius: 10px;
-      cursor: pointer;
-      flex: 1 0 40%;
-      max-width: 200px;
+    padding: 10px 15px;
+    font-size: 16px;
+    border: none;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    min-width: 120px;
+    max-width: 200px;
+    flex: 1 1 auto;
     }
 
     button:hover {
@@ -85,10 +95,16 @@
 
     @media (max-width: 600px) {
       button {
-        font-size: 14px;
-        padding: 8px 10px;
-      }
+            font-size: 14px;
+            padding: 8px 10px;
+          }
+
+    #currentTrack, #message, #finishMessage {
+            word-wrap: break-word;
+            padding: 0 10px;
+            }
     }
+
   </style>
 </head>
 <body>
@@ -97,13 +113,19 @@
   <audio id="audioPlayer" controls></audio>
 
   <div class="button-container">
+  <div class="button-row">
     <button onclick="startPlaylist()">▶ スタート</button>
-    <button onclick="resetPlaylist()">🔄 リセット</button><br>
+    <button onclick="resetPlaylist()">🔄 リセット</button>
+  </div>
+  <div class="button-row">
     <button onclick="playPrevious()">⏮ 前の曲</button>
     <button onclick="playNext()">⏭ 次の曲</button>
-    <button onclick="restartCurrent()">🔁 この曲の頭から</button><br>
+  </div>
+  <div class="button-row">
+    <button onclick="restartCurrent()">🔁 この曲の頭から</button>
     <button onclick="rewind(5)">⏪ 5秒戻す</button>
     <button onclick="forward(5)">⏩ 5秒進める</button>
+  </div>
   </div>
 
   <div id="currentTrack">現在再生中の曲: なし</div>
