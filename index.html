@@ -98,10 +98,10 @@
 
   <div class="button-container">
     <button onclick="startPlaylist()">▶ スタート</button>
-    <button onclick="resetPlaylist()">🔄 リセット</button>
+    <button onclick="resetPlaylist()">🔄 リセット</button><br>
     <button onclick="playPrevious()">⏮ 前の曲</button>
     <button onclick="playNext()">⏭ 次の曲</button>
-    <button onclick="restartCurrent()">🔁 この曲の頭から</button>
+    <button onclick="restartCurrent()">🔁 この曲の頭から</button><br>
     <button onclick="rewind(5)">⏪ 5秒戻す</button>
     <button onclick="forward(5)">⏩ 5秒進める</button>
   </div>
@@ -113,7 +113,67 @@
   <div id="playlist"></div>
 
   <script>
-    const musicList = [...]; // 略：同じ内容を維持
+    const musicList = [
+          "music/1st down _ SEVENTEEN.mp3",
+      "music/1st Down _ いきものがかり.mp3",
+      "music/BTオハコ _ イナヅマダンス.mp3",
+      "music/Dコール _ 20世紀少年.mp3",
+      "music/Dコール _ clap.mp3",
+      "music/Dコール _ Feeling.mp3",
+      "music/Dコール _ Narco.mp3",
+      "music/Dコール _ Samurai(音量UP).mp3",
+      "music/Dコール _ アベンジャーズ.mp3",
+      "music/Dコール _ ジョジョ.mp3",
+      "music/Dコール _ マツケンEDM.mp3",
+      "music/Dスタート _ Dirty.mp3",
+      "music/Dスタート _ HOT.mp3",
+      "music/Dダンス _ Chap.mp3",
+      "music/Dダンス _ Dalla Dalla.mp3",
+      "music/Dダンス _ Tambourine .mp3",
+      "music/Dダンス _ BON JOVI(8×1カット).mp3",
+      "music/Dダンス _ Move.mp3",
+      "music/Dダンス _ Power(音量up).mp3",
+      "music/Dナイス _ Wicked.mp3",
+      "music/Dナイス _ woman.mp3",
+      "music/FA (O) _ Head&Heart.mp3",
+      "music/Oコール _ DADDY.mp3",
+      "music/Oコール _ Jump.mp3",
+      "music/Oコール _ Pitbull.mp3",
+      "music/Oコール _ Shake it.mp3",
+      "music/Oコール _ WHIP THAT3.mp3",
+      "music/Oスタ② _ Game Time.mp3",
+      "music/Oダンス _ BB.mp3",
+      "music/Oダンス _ Camila.mp3",
+      "music/Oダンス _ MAROON5.mp3",
+      "music/Oダンス _ Tick Tick Boom.mp3",
+      "music/Oダンス _ Tinie.mp3",
+      "music/Oナイス _ Crusin.mp3",
+      "music/Oナイス _ なにわ.mp3",
+      "music/TO _ Million Dollar.mp3",
+      "music/TO _ キューティーハニー.mp3",
+      "music/TO(D) _ STAND UP.mp3",
+      "music/TO(D) _ ディセンダント.mp3",
+      "music/TO(D)Million Dollar.mp3",
+      "music/TO(O)_ Money.mp3",
+      "music/◆2024 花道_ When Legends Rise.mp3",
+      "music/◆コイントス.mp3",
+      "music/◇ TD成功 _ ヘアスプレー.mp3",
+      "music/◇TDコール _ 桜庭.mp3",
+      "music/◇TDコール_Burn It the Ground.mp3",
+      "music/◇トラポン1Q3Q _ Get A Chance.mp3",
+      "music/◇トラポン2Q4Q _ Rip it up.mp3",
+      "music/★キックオフ _ Joker.mp3",
+      "music/★キックオフ _ Rage.mp3",
+      "music/【復活】ターンオーバー(O_Dスタ) AC_DC.mp3",
+      "music/オープニング2025春.mp3",
+      "music/春ハーフ【Been like this】 .mp3",
+      "music/相手FG _ STAND UP.mp3",
+      "music/相手FG _ 半沢直樹.mp3",
+      "music/相手TD _ Another Level.mp3",
+      "music/相手TD _ HEAVY.mp3",
+      "music/Ｏスタ①.mp3",
+      "music/Ｏダンス _ Austin.mp3"
+    ]; 
 
     let playedTracks = [];
     let currentIndex = -1;
