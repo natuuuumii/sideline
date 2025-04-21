@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>音楽付きホームページ</title>
+  <title>ランダム音楽プレイヤー</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -11,18 +11,74 @@
       padding: 50px;
     }
 
-    audio {
-      margin-top: 30px;
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 18px;
+      border: none;
+      background-color: #4CAF50;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #message {
+      margin-top: 20px;
+      font-size: 16px;
+      color: #333;
     }
   </style>
 </head>
 <body>
-  <h1>ようこそ、音楽が流れるホームページへ🎵</h1>
-  <p>以下のプレイヤーで音楽を聴いてね！</p>
+  <h1>🎶 Oコールランダム 🎶</h1>
 
-  <audio controls>
-    <source src="music/春ハーフ【Been like this】 .mp3" type="audio/mp3">
-    お使いのブラウザはaudioタグに対応していません。
-  </audio>
+  <audio id="audioPlayer" controls style="margin-top: 20px;"></audio><br>
+  <button onclick="playRandom()">▶ 再生</button>
+  <button onclick="playNext()">⏭ 次へ</button>
+
+  <div id="message"></div>
+
+  <script>
+    const musicList = [
+      "music/Oコール_Jump.mp3",
+      "music/Oコール_Pitbull.mp3",
+      "music/Oコール_DADDY.mp3"
+    ];
+
+    let playedTracks = [];
+
+    function getRandomTrack() {
+      const remainingTracks = musicList.filter(track => !playedTracks.includes(track));
+      if (remainingTracks.length === 0) {
+        return null;
+      }
+      const randomIndex = Math.floor(Math.random() * remainingTracks.length);
+      return remainingTracks[randomIndex];
+    }
+
+    function playRandom() {
+      const track = getRandomTrack();
+      const messageDiv = document.getElementById('message');
+      if (!track) {
+        messageDiv.innerText = "🎉 リストの曲すべてが終了しました 🎉";
+        return;
+      }
+
+      playedTracks.push(track);
+      const audioPlayer = document.getElementById("audioPlayer");
+      audioPlayer.src = track;
+      audioPlayer.play();
+
+      messageDiv.innerText = `再生中: ${track}`;
+    }
+
+    function playNext() {
+      playRandom();
+    }
+  </script>
 </body>
 </html>
