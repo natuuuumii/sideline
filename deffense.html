@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>BTC SIDELINEイントロドン【全曲】</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f8ff;
+      text-align: center;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    audio {
+    width: 90%;
+    max-width: 500px;
+    margin: 20px auto 0;
+    display: block;
+    }
+
+    .button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin-top: 20px;
+    }
+
+    .button-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 10px;
+    }
+
+
+    button {
+    padding: 10px 15px;
+    font-size: 16px;
+    border: none;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    min-width: 120px;
+    max-width: 200px;
+    flex: 1 1 auto;
+    }
+
+    button:hover {
+      opacity: 0.85;
+    }
+
+    .btn-start { background-color: #3d6aad; }     /* スタート */
+    .btn-reset { background-color: #7b7685; }     /* リセット */
+    .btn-prev { background-color: #71b4c7; }      /* 前の曲 */
+    .btn-next { background-color: #71b4c7; }      /* 次の曲 */
+    .btn-restart { background-color: #74c4c0; }   /* この曲の頭から */
+    .btn-rewind { background-color: #74c4c0; }    /* 5秒戻す */
+    .btn-forward { background-color: #74c4c0; }   /* 5秒進める */
+
+    #currentTrack, #message, #finishMessage {
+      margin-top: 15px;
+      font-size: 16px;
+      color: #333;
+    }
+
+    #finishMessage {
+      color: red;
+      font-weight: bold;
+    }
+
+    #playlist {
+      margin-top: 60px;
+      text-align: left;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      background: #fff;
+      padding: 10px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .track-item {
+      padding: 5px;
+    }
+
+    .playing {
+      background-color: #d1ecf1;
+      font-weight: bold;
+    }
+
+    @media (max-width: 600px) {
+      button {
+            font-size: 14px;
+            padding: 8px 10px;
+          }
+
+    #currentTrack, #message, #finishMessage {
+            word-wrap: break-word;
+            padding: 0 10px;
+            }
+    }
+
+  </style>
+</head>
+<body>
+  <h1>? BTC SIDELINEイントロドン【全曲】 ?</h1>
+
+  <div class="button-row">
+  <button class="btn-start" onclick="startPlaylist()">?スタート</button>
+  <!-- <button class="btn-reset" onclick="resetPlaylist()">? リセット</button>-->
+  <button class="btn-prev" onclick="playPrevious()">? 前の曲</button>
+  <button class="btn-next" onclick="playNext()">? 次の曲</button>
+  </div>
+  <div class="button-row">
+  <button class="btn-restart" onclick="restartCurrent()">? この曲の頭から</button>
+  <button class="btn-rewind" onclick="rewind(5)">? 5秒戻す</button>
+  <button class="btn-forward" onclick="forward(5)">? 5秒進める</button>
+  </div>
+
+  <div id="currentTrack">現在再生中の曲: なし</div>
+  <div id="message"></div>
+  <div id="finishMessage"></div>
+
+  <audio id="audioPlayer" controls></audio>
+
+  <div id="playlist"></div>
+
+  <script>
+    const musicList = [
+      "music/1st down _ SEVENTEEN.mp3",
+      "music/1st Down _ いきものがかり.mp3",
+      "music/BTオハコ _ イナヅマダンス.mp3",
+      "music/Dコール _ 20世紀少年.mp3",
+      "music/Dコール _ clap.mp3",
+      "music/Dコール _ Feeling.mp3",
+      "music/Dコール _ Narco.mp3",
+      "music/Dコール _ Samurai(音量UP).mp3",
+      "music/Dコール _ アベンジャーズ.mp3",
+      "music/Dコール _ シ゛ョシ゛ョ.mp3",
+      "music/Dコール _ マツケンEDM.mp3",
+      "music/Dスタート _ Dirty.mp3",
+      "music/Dスタート _ HOT.mp3",
+      "music/Dタ゛ンス _ Chap.mp3",
+      "music/Dタ゛ンス _ Dalla Dalla.mp3",
+      "music/Dタ゛ンス _ Tambourine .mp3",
+      "music/Dダンス _ BON JOVI(8×1カット).mp3",
+      "music/Dダンス _ Move.mp3",
+      "music/Dダンス _ Power(音量up).mp3",
+      "music/Dナイス _ Wicked.mp3",
+      "music/Dナイス _ woman.mp3",
+      "music/FA (O) _ Head&Heart.mp3",
+      "music/Oコール _ DADDY.mp3",
+      "music/Oコール _ Jump.mp3",
+      "music/Oコール _ Pitbull.mp3",
+      "music/Oコール _ Shake it.mp3",
+      "music/Oコール _ WHIP THAT3.mp3",
+      "music/Oスタ② _ Game Time.mp3",
+      "music/Oタ゛ンス _ BB.mp3",
+      "music/Oダンス _ Camila.mp3",
+      "music/Oダンス _ MAROON5.mp3",
+      "music/Oダンス _ Tick Tick Boom.mp3",
+      "music/Oダンス _ Tinie.mp3",
+      "music/Oナイス _ Crusin.mp3",
+      "music/Oナイス _ なにわ.mp3",
+      "music/TO _ Million Dollar.mp3",
+      "music/TO _ キューティーハニー.mp3",
+      "music/TO(D) _ ディセンダント.mp3",
+      "music/TO(D)Million Dollar.mp3",
+      "music/TO(O)_ Money.mp3",
+      "music/◆2024 花道_ When Legends Rise.mp3",
+      "music/◆コイントス.mp3",
+      "music/◇ TD成功 _ ヘアスプレー.mp3",
+      "music/◇TDコール _ 桜庭.mp3",
+      "music/◇TDコール_Burn It the Ground.mp3",
+      "music/◇トラポン1Q3Q _ Get A Chance.mp3",
+      "music/◇トラポン2Q4Q _ Rip it up.mp3",
+      "music/★キックオフ _ Joker.mp3",
+      "music/★キックオフ _ Rage.mp3",
+      "music/【復活】ターンオーバー(O_Dスタ) AC_DC.mp3",
+      "music/オープニング2025春.mp3",
+      "music/春ハーフ【Been like this】 .mp3",
+      "music/相手FG _ STAND UP.mp3",
+      "music/相手FG _ 半沢直樹.mp3",
+      "music/相手TD _ Another Level.mp3",
+      "music/相手TD _ HEAVY.mp3",
+      "music/Ｏスタ①.mp3",
+      "music/Ｏダンス _ Austin.mp3"
+    ]; 
+
+    let playedTracks = [];
+    let currentIndex = -1;
+    let playlistOrder = [];
+    const audioPlayer = document.getElementById("audioPlayer");
+    const messageDiv = document.getElementById("message");
+    const finishMessageDiv = document.getElementById("finishMessage");
+    const currentTrackDiv = document.getElementById("currentTrack");
+    const playlistDiv = document.getElementById("playlist");
+
+    function shuffle(array) {
+      return array.sort(() => Math.random() - 0.5);
+    }
+
+    function startPlaylist() {
+      resetPlaylist();
+      playlistOrder = shuffle([...musicList]);
+      renderPlaylist();
+      playNext();
+    }
+
+    function playNext() {
+      if (currentIndex + 1 >= playlistOrder.length) {
+        finishMessageDiv.innerText = "Finish";
+        return;
+      }
+      currentIndex++;
+      playTrack(playlistOrder[currentIndex]);
+    }
+
+    function playPrevious() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        playTrack(playlistOrder[currentIndex]);
+      }
+    }
+
+    function restartCurrent() {
+      if (currentIndex >= 0) {
+        audioPlayer.currentTime = 0;
+        audioPlayer.play();
+      }
+    }
+
+    function resetPlaylist() {
+      playedTracks = [];
+      currentIndex = -1;
+      playlistOrder = [];
+      messageDiv.innerText = "";
+      finishMessageDiv.innerText = "";
+      currentTrackDiv.innerText = "現在再生中の曲: なし";
+      audioPlayer.pause();
+      audioPlayer.currentTime = 0;
+      audioPlayer.src = "";
+      playlistDiv.innerHTML = "";
+    }
+
+    function playTrack(track) {
+      audioPlayer.src = track;
+      audioPlayer.play();
+      currentTrackDiv.innerText = `現在再生中の曲: ${track}`;
+      highlightTrack(track);
+    }
+
+    function rewind(seconds) {
+      audioPlayer.currentTime = Math.max(audioPlayer.currentTime - seconds, 0);
+    }
+
+    function forward(seconds) {
+      audioPlayer.currentTime = Math.min(audioPlayer.currentTime + seconds, audioPlayer.duration);
+    }
+
+    audioPlayer.onended = function() {
+      playNext();
+    };
+
+    function renderPlaylist() {
+      playlistDiv.innerHTML = "";
+      playlistOrder.forEach((track, index) => {
+        const div = document.createElement("div");
+        div.className = "track-item";
+        div.id = `track-${index}`;
+        div.textContent = track;
+        playlistDiv.appendChild(div);
+      });
+    }
+
+    function highlightTrack(currentTrack) {
+      playlistOrder.forEach((track, index) => {
+        const div = document.getElementById(`track-${index}`);
+        if (div) {
+          if (track === currentTrack) {
+            div.classList.add("playing");
+          } else {
+            div.classList.remove("playing");
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>
