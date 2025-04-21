@@ -23,7 +23,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 20px;
     margin-top: 20px;
     }
 
@@ -31,7 +31,7 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 10px;
+    gap: 20px;
     }
 
 
@@ -53,10 +53,8 @@
 
     .btn-start { background-color: #3d6aad; }     /* スタート */
     .btn-reset { background-color: #7b7685; }     /* リセット */
-    
     .btn-prev { background-color: #71b4c7; }      /* 前の曲 */
-    .btn-next { background-color: ##71b4c7; }      /* 次の曲 */
-    
+    .btn-next { background-color: #71b4c7; }      /* 次の曲 */
     .btn-restart { background-color: #74c4c0; }   /* この曲の頭から */
     .btn-rewind { background-color: #74c4c0; }    /* 5秒戻す */
     .btn-forward { background-color: #74c4c0; }   /* 5秒進める */
@@ -73,7 +71,7 @@
     }
 
     #playlist {
-      margin-top: 40px;
+      margin-top: 60px;
       text-align: left;
       max-width: 600px;
       margin-left: auto;
@@ -119,8 +117,6 @@
   <div class="button-row">
   <button class="btn-prev" onclick="playPrevious()">⏮ 前の曲</button>
   <button class="btn-next" onclick="playNext()">⏭ 次の曲</button>
-  </div>
-  <div class="button-row">
   <button class="btn-restart" onclick="restartCurrent()">🔁 この曲の頭から</button>
   <button class="btn-rewind" onclick="rewind(5)">⏪ 5秒戻す</button>
   <button class="btn-forward" onclick="forward(5)">⏩ 5秒進める</button>
