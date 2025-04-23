@@ -34,6 +34,19 @@
     gap: 20px;
     margin-bottom: 10px;
     }
+    
+    .button-row.full-width button {
+    width: 100%;
+    max-width: 500px;
+    }
+
+    .button-row.half-width button {
+    width: 48%;
+    }
+
+    .button-row.third-width button {
+    width: 30%;
+    }
 
 
     button {
@@ -111,16 +124,24 @@
 <body>
   <h1>🎵BTC SIDELINEイントロドン【全曲】🎵</h1>
 
-  <div class="button-row">
-  <button class="btn-start" onclick="startPlaylist()">💛スタート(リセット)</button>
-  <!-- <button class="btn-reset" onclick="resetPlaylist()">リセット</button>-->
-  <button class="btn-prev" onclick="playPrevious()">🔙前の曲</button>
-  <button class="btn-next" onclick="playNext()">次の曲🔜</button>
+  <div class="button-container">
+  <!-- ① 1段目: 横長ボタン -->
+  <div class="button-row full-width">
+    <button class="btn-start" onclick="startPlaylist()">💛スタート(リセット)</button>
   </div>
-  <div class="button-row">
-  <button class="btn-restart" onclick="restartCurrent()">頭から</button>
-  <button class="btn-rewind" onclick="rewind(5)">5秒戻す</button>
-  <button class="btn-forward" onclick="forward(5)">5秒進める</button>
+
+  <!-- ② 2段目: 半分ずつ -->
+  <div class="button-row half-width">
+    <button class="btn-prev" onclick="playPrevious()">🔙 前の曲</button>
+    <button class="btn-next" onclick="playNext()">次の曲 🔜</button>
+  </div>
+
+  <!-- ③ 3段目: 3分割 -->
+  <div class="button-row third-width">
+    <button class="btn-restart" onclick="restartCurrent()"🔄 頭から</button>
+    <button class="btn-rewind" onclick="rewind(5)"⏪ 5秒戻す</button>
+    <button class="btn-forward" onclick="forward(5)"5秒進める ⏩</button>
+  </div>
   </div>
 
   <div id="currentTrack">現在再生中の曲: なし</div>
