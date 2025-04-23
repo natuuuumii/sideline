@@ -294,7 +294,8 @@
       audioPlayer.src = track;
       audioPlayer.play();
       currentTrackDiv.innerText = `現在再生中の曲: ${track}`;
-      highlightTrack(track);
+      // DOM更新を待ってからハイライト（スマホでのズレ対策）
+      setTimeout(() => highlightTrack(track), 30);
     }
 
     function rewind(seconds) {
@@ -328,16 +329,19 @@
     }
 
     function highlightTrack(currentTrack) {
-      playlistOrder.forEach((track, index) => {
+     // 全部消す
+        document.querySelectorAll(".track-item").forEach((div) => {
+        div.classList.remove("playing");
+        });
+
+     // インデックスベースで確実に追加
+        const index = playlistOrder.findIndex((track) => track === currentTrack);
         const div = document.getElementById(`track-${index}`);
         if (div) {
-          if (track === currentTrack) {
-            div.classList.add("playing");
-          } else {
-            div.classList.remove("playing");
-          }
+                div.classList.add("playing");
+    // スマホ対策：表示領域にスクロール
+        div.scrollIntoView({ behavior: "smooth", block: "nearest" });
         }
-      });
     }
   </script>
 </body>
