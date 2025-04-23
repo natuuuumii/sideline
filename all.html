@@ -11,6 +11,7 @@
       text-align: center;
       padding: 20px;
       box-sizing: border-box;
+      touch-action: manipulation;
     }
 
     audio {
@@ -25,7 +26,8 @@
     flex-direction: column;
     align-items: center;
     gap: 10px;
-    margin-top: 20px;
+    margin: auto;
+    width: 400px;
     }
 
     .button-row {
@@ -93,12 +95,35 @@
     }
 
     .track-item {
-      padding: 5px;
+        padding: 5px;
+        word-break: break-all; /* 長い単語（ファイル名）でも折り返す */
+        overflow-wrap: break-word; /* 補足：単語を折り返し対象に */
     }
 
     .playing {
       background-color: #d1ecf1;
       font-weight: bold;
+    }
+    
+    @media (max-width: 480px) {
+    .track-item {
+      font-size: 14px;
+      padding: 8px 5px;
+    }
+
+    #playlist {
+      padding: 5px;
+    }
+
+    .button-container {
+      width: 100%; /* ボタンも画面に収まりやすく */
+    }
+
+    button {
+      font-size: 14px;
+      padding: 8px;
+      min-width: 100px;
+    }
     }
     
   </style>
