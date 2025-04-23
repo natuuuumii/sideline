@@ -23,7 +23,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: 10px;
     margin-top: 20px;
     }
 
@@ -31,8 +31,9 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 20px;
-    margin-bottom: 10px;
+    gap: 10px;
+    margin-bottom: 1px;
+    width: 400px;
     }
     
     .button-row.full-width button {
@@ -97,19 +98,7 @@
       background-color: #d1ecf1;
       font-weight: bold;
     }
-
-    @media (max-width: 600px) {
-      button {
-            font-size: 14px;
-            padding: 8px 10px;
-          }
-
-    #currentTrack, #message, #finishMessage {
-            word-wrap: break-word;
-            padding: 0 10px;
-            }
-    }
-
+    
   </style>
 </head>
 <body>
@@ -129,9 +118,9 @@
 
   <!-- ③ 3段目: 3分割 -->
   <div class="button-row third-width">
-    <button class="btn-restart" onclick="restartCurrent()">🔄 頭から</button>
     <button class="btn-rewind" onclick="rewind(5)">⏪ 5秒戻す</button>
-    <button class="btn-forward" onclick="forward(5)">5秒進める ⏩</button>
+    <button class="btn-restart" onclick="restartCurrent()">🔄 頭から</button>
+    <button class="btn-forward" onclick="forward(5)">5秒進む ⏩</button>
   </div>
   </div>
 
