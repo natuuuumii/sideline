@@ -290,6 +290,13 @@
         div.className = "track-item";
         div.id = `track-${index}`;
         div.textContent = track;
+        
+        // 🔽 クリックでその曲を再生
+        div.addEventListener("click", () => {
+        currentIndex = index; // 現在のインデックスを更新
+        playTrack(track);
+        });
+    
         playlistDiv.appendChild(div);
       });
     }
