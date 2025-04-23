@@ -34,12 +34,11 @@
     justify-content: center;
     gap: 10px;
     margin-bottom: 1px;
-    width: 400px;
+    width: 100%;
     }
     
     .button-row.full-width button {
     width: 100%;
-    max-width: 500px;
     }
 
     button {
@@ -49,7 +48,9 @@
     color: white;
     border-radius: 10px;
     cursor: pointer;
-    flex: 1 1 auto;
+    flex: 1 1 40%;
+    min-width: 120px; /* 必要に応じて調整 */
+    box-sizing: border-box;
     }
 
     button:hover {
