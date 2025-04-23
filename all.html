@@ -174,9 +174,9 @@
       "music/Dコール _ マツケンEDM.mp3",
       "music/Dスタート _ Dirty.mp3",
       "music/Dスタート _ HOT.mp3",
-      "music/Dダンス _ Chap.mp3",
-      "music/Dダンス _ Dalla Dalla.mp3",
-      "music/Dダンス _ Tambourine .mp3",
+      "music/Dダンス _ Chap.mp3",
+      "music/Dダンス _ Dalla Dalla.mp3",
+      "music/Dダンス _ Tambourine .mp3",
       "music/Dダンス _ BON JOVI(8×1カット).mp3",
       "music/Dダンス _ Move.mp3",
       "music/Dダンス _ Power(音量up).mp3",
@@ -189,7 +189,7 @@
       "music/Oコール _ Shake it.mp3",
       "music/Oコール _ WHIP THAT3.mp3",
       "music/Oスタ② _ Game Time.mp3",
-      "music/Oダンス _ BB.mp3",
+      "music/Oダンス _ BB.mp3",
       "music/Oダンス _ Camila.mp3",
       "music/Oダンス _ MAROON5.mp3",
       "music/Oダンス _ Tick Tick Boom.mp3",
@@ -316,7 +316,7 @@
         const div = document.createElement("div");
         div.className = "track-item";
         div.id = `track-${index}`;
-        div.textContent = track;
+        div.textContent = track.split("/").pop(); // ファイル名だけにする
         
         // 🔽 クリックでその曲を再生
         div.addEventListener("click", () => {
@@ -339,8 +339,6 @@
         const div = document.getElementById(`track-${index}`);
         if (div) {
                 div.classList.add("playing");
-    // スマホ対策：表示領域にスクロール
-        div.scrollIntoView({ behavior: "smooth", block: "nearest" });
         }
     }
   </script>
