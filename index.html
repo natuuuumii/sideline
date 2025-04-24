@@ -26,11 +26,17 @@
       background-color: #3d6aad;
       color: white;
       cursor: pointer;
-      width: 400px;
+      width: 90％;
     }
 
     .menu-button:hover {
       background-color: #2e4e80;
+    }
+    
+    .button-desc {
+      font-size: 12px;
+      color: #333;
+      margin-bottom: 10px;
     }
     
     .one-line-text {
@@ -38,19 +44,29 @@
       overflow: hidden;             /* はみ出た部分は隠す */
       text-overflow: ellipsis;      /* 「…」で省略 */
       font-weight: bold;            /* 太字 */
-      color: navy;                  /* ネイビー */
     }
 
   </style>
 </head>
 <body>
   <h3 class="one-line-text">🎶 BTC SIDELINEイントロドン 🎶</h3>
-
+  
+    <!-- タイトルロゴ -->
+    <div class="header">
+        <img src="images/logo.png" alt="タイトルロゴ">
+    </div>
+    
   <button class="menu-button" onclick="location.href='all.html'">全曲</button>
+  <div class="button-desc">決まった場面でかかる曲以外のサイドライン曲をシャッフルで再生</div>
   <button class="menu-button" onclick="location.href='offense.html'">オフェンス曲のみ</button>
+  <div class="button-desc">オフェンス曲のみをシャッフルで再生</div>
   <button class="menu-button" onclick="location.href='defense.html'">ディフェンス曲のみ</button>
+  <div class="button-desc">ディフェンス曲のみをシャッフルで再生</div>
   <button class="menu-button" onclick="location.href='call.html'">コール曲のみ</button>
+  <div class="button-desc">O/D/TDのコール曲のみをシャッフルで再生</div>
   <button class="menu-button" onclick="location.href='formation.html'">フォーメ曲のみ</button>
-  <button class="menu-button" onclick="location.href='other.html'">その他の曲（OP/ハーフなど)</button>
+  <div class="button-desc">フォーメーション付きの曲をシャッフルで再生</div>
+  <button class="menu-button" onclick="location.href='other.html'">その他の曲</button>
+  <div class="button-desc">OP/花道/コイントス/キックオフ/ハーフ/2min/その他</div>
 </body>
 </html>
