@@ -161,7 +161,7 @@
   <header class="page-header">
   <a href="index.html" class="home-link">🏠 TOPページに戻る</a>
   </header>
-  <h1>🎵BTC SIDELINEイントロドン【オフェンス曲】🎵</h1>
+  <h3>🎵BTC SIDELINEイントロドン【オフェンス曲】🎵</h3>
 
   <div class="button-container">
   <!-- ① 1段目: 横長ボタン -->
@@ -183,7 +183,7 @@
   </div>
   </div>
 
-  <div id="currentTrack">現在再生中の曲: なし</div>
+  <div id="currentTrack">再生中: なし</div>
   <div id="message"></div>
   <div id="finishMessage"></div>
 
@@ -282,7 +282,7 @@
       playlistOrder = [];
       messageDiv.innerText = "";
       finishMessageDiv.innerText = "";
-      currentTrackDiv.innerText = "現在再生中の曲: なし";
+      currentTrackDiv.innerText = "再生中: なし";
       audioPlayer.pause();
       audioPlayer.currentTime = 0;
       audioPlayer.src = "";  // オーディオを完全にリセット
@@ -292,7 +292,8 @@
     function playTrack(track) {
       audioPlayer.src = track;
       audioPlayer.play();
-      currentTrackDiv.innerText = `現在再生中の曲: ${track}`;
+      const fileName = track.split("/").pop(); // パスからファイル名だけ抽出
+      currentTrackDiv.innerText = `再生中: ${fileName}`;
       // DOM更新を待ってからハイライト（スマホでのズレ対策）
       setTimeout(() => highlightTrack(track), 30);
     }
