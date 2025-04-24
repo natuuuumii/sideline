@@ -26,16 +26,25 @@
       background-color: #3d6aad;
       color: white;
       cursor: pointer;
-      width: 600px;
+      width: 400px;
     }
 
     .menu-button:hover {
       background-color: #2e4e80;
     }
+    
+    .one-line-text {
+      white-space: nowrap;          /* 改行させない */
+      overflow: hidden;             /* はみ出た部分は隠す */
+      text-overflow: ellipsis;      /* 「…」で省略 */
+      font-weight: bold;            /* 太字 */
+      color: navy;                  /* ネイビー */
+    }
+
   </style>
 </head>
 <body>
-  <h1>🎶 BTC SIDELINEイントロドン 🎶</h1>
+  <h3 class="one-line-text">🎶 BTC SIDELINEイントロドン 🎶</h3>
 
   <button class="menu-button" onclick="location.href='all.html'">全曲</button>
   <button class="menu-button" onclick="location.href='offense.html'">オフェンス曲のみ</button>
