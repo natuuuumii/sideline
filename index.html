@@ -7,59 +7,75 @@
   
   
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f0f8ff;
-      text-align: center;
-      padding: 50px 20px;
-    }
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f8ff;
+    text-align: center;
+    padding: 50px 20px;
+    box-sizing: border-box;
+  }
 
-    h1 {
-      margin-bottom: 40px;
-    }
+  h1, h3 {
+    margin-bottom: 30px;
+  }
 
+  .menu-button {
+    display: block;
+    margin: 15px auto;
+    padding: 15px 30px;
+    font-size: 18px;
+    border: none;
+    border-radius: 10px;
+    background-color: #3d6aad;
+    color: white;
+    cursor: pointer;
+    width: 100%;
+    max-width: 400px; /*  PCで見ても大きすぎない */
+    box-sizing: border-box;
+  }
+
+  .menu-button:hover {
+    background-color: #2e4e80;
+  }
+
+  .button-desc {
+    font-size: 12px;
+    color: #333;
+    margin: -5px auto 20px;
+    max-width: 400px;
+  }
+
+  .one-line-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: bold;
+  }
+
+  .header {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto 30px;
+  }
+
+  .header img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  @media (max-width: 480px) {
     .menu-button {
-      display: block;
-      margin: 15px auto;
-      padding: 15px 30px;
-      font-size: 18px;
-      border: none;
-      border-radius: 10px;
-      background-color: #3d6aad;
-      color: white;
-      cursor: pointer;
-      width: 90％;
+      font-size: 16px;
+      padding: 12px 20px;
     }
 
-    .menu-button:hover {
-      background-color: #2e4e80;
-    }
-    
     .button-desc {
-      font-size: 10px;
-      color: #333;
-      margin-bottom: 10px;
+      font-size: 11px;
     }
-    
-    .one-line-text {
-      white-space: nowrap;          /* 改行させない */
-      overflow: hidden;             /* はみ出た部分は隠す */
-      text-overflow: ellipsis;      /* 「…」で省略 */
-      font-weight: bold;            /* 太字 */
-    }
-      .header {
-      width: 90%;
-      margin: 0 auto;
-      }
+  }
+</style>
 
-      .header img {
-      max-width: 100%;
-      height: auto;
-      display: block;
-      margin: 0 auto;
-      }
-
-  </style>
   
   
   
