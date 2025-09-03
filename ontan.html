@@ -15,16 +15,6 @@
       --btn-text: #fff;
       --playing: #d1ecf1;
       --border: rgba(0,0,0,0.08);
-      --btnH: 44px;   /* デフォのボタン高さ（PC/タブ） */
-      --btnFS: 12px;  /* デフォの文字サイズ */
-    }
-    
-    /* スマホ時はさらにコンパクトに */
-    @media (max-width: 600px) {
-    :root {
-    --btnH: 38px;  /* 行の高さを下げて横長感アップ */
-    --btnFS: 11px; /* 文字を小さく */
-    }
     }
 
     * { box-sizing: border-box; }
@@ -47,40 +37,28 @@
 
     audio { display: block; width: min(760px, 94vw); margin: 8px auto 18px; }
 
-    /*★ 重要：グリッドの行高を固定（＝ボタンの高さ固定） */
+    /* グリッド: 端末に関係なく常に8×8 */
     .grid {
-    display: grid;
-    grid-template-columns: repeat(8, minmax(0, 1fr));
-    gap: 8px;
-    width: calc(100vw - 32px); /* 余白ぶん差し引いてスマホで横幅を最大化 */
-    max-width: 860px;          /* PCでの上限（お好みで） */
-    margin: 0 auto;
-    grid-auto-rows: var(--btnH); /* ← これで各行の高さ固定！ */
+      display: grid;
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+      gap: 8px;
+      width: min(820px, 96vw);
+      margin: 0 auto;
     }
-    
     /* ボタンを小画面で潰れにくくする微調整（任意） */
     .sound-btn {
     appearance: none;
     border: 1px solid var(--border);
     border-radius: 12px;
-    background: #fff;
-    color: #111;
-    /* 高さはグリッド任せ。ボタン自体はセル一杯に伸ばす */
-    height: 100%;                 /* ← 行高にフィット */
-    padding: 0 6px;               /* 縦のパディングを詰める（文字は中央寄せでOK） */
-    font-size: var(--btnFS);      /* ← 可変 */
-    line-height: 1.1;
-    display: flex;                /* 中央寄せ */
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    white-space: normal;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;        /* 2行で切る */
-    -webkit-box-orient: vertical;
-    line-height: 1.1;
-    padding: 2px 6px; 
-    
+    background: #fff;        /* ← 白背景に */
+    color: #111;             /* ← 黒文字に */
+    padding: clamp(6px, 1vw, 10px) clamp(4px, 0.8vw, 8px);
+    min-height: clamp(36px, 5vw, 48px);
+    font-size: clamp(10px, 1.6vw, 14px);
+    line-height: 1.2;
+    cursor: pointer;
+    transition: transform .04s ease, opacity .2s ease, box-shadow .2s ease, background .2s ease;
+    word-break: break-word;
     }
     .sound-btn:hover { opacity: .92; }
     .sound-btn:active { transform: translateY(1px); }
