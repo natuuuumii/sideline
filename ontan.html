@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>BTC SIDELINE【64ボタン版】</title>
+  <title>BTC SIDELINE【音担さん用】</title>
   <link rel="icon" type="image/png" href="images/favicon.jpeg" />
   <link rel="apple-touch-icon" href="images/favicon.jpeg" />
   <style>
@@ -87,10 +87,9 @@
 <body>
   <header class="page-header">
     <a href="index.html" class="home-link">🏠 TOPページに戻る</a>
-    <span style="opacity:.6;font-size:12px">/ 64 Button Soundboard</span>
   </header>
 
-  <h3>🎵 BTC SIDELINE【その他｜64ボタン】</h3>
+  <h3>🎵 BTC SIDELINE【音担さん用】</h3>
 
   <div id="currentTrack">再生中: なし</div>
   <!-- 既存ページの audioPlayer を流用 -->
@@ -98,35 +97,31 @@
 
   <!-- 8×8＝64ボタンを自動生成 -->
   <div id="grid" class="grid" aria-label="サウンドボード 64ボタン"></div>
-
-  <p class="legend">
-    🔧 未割り当てのボタンはグレー表示になります。曲を割り当てるには <code>tracks[i].src</code> にファイルパスを入れてください。
-  </p>
-
+  
 <script>
   // --- 設定ここから -------------------------------------------------------
   // 64スロット分のトラックを定義。label=ボタン表示名、src=ファイルパス。
   // 既存の9曲を先頭に入れ、残りは未割り当て（src: ""）で作ってあります。
   const tracks = [
-    { label: "1st down/いきもの", src: "music/1st Down _ いきものがかり.mp3" },
-    { label: "1st down/Seventeen", src: "music/1st down _ SEVENTEEN.mp3" },
-    { label: "TDコール/Burn It", src: "music/◇TDコール_Burn It the Ground.mp3" },
-    { label: "TDコール/桜庭", src: "music/◇TDコール _ 桜庭.mp3" },
-    { label: "TDヘアスプレー", src: "music/◇ TD成功 _ ヘアスプレー.mp3" },
-    { label: "トラポン/Get a Chance", src: "music/◇トラポン1Q3Q _ Get A Chance.mp3" },
-    { label: "トラポン/Rip it up", src: "music/◇トラポン2Q4Q _ Rip it up.mp3" },
-    { label: "キューティー", src: "music/TO _ キューティーハニー.mp3" },
-    { label: "Oナイス/Cruisin'", src: "music/Oナイス _ Crusin.mp3", textColor: "red" },
-    { label: "Oナイス/なにわ", src: "music/Oナイス _ なにわ.mp3", textColor: "red" },
-    { label: "Dナイス/woman", src: "music/Dナイス _ woman.mp3", textColor: "blue"  },
-    { label: "Dナイス/Wicked", src: "music/Dナイス _ Wicked.mp3", textColor: "blue"  },
+    { label: "1stD/いきもの", src: "music/1st Down _ いきものがかり.mp3" },
+    { label: "1stD/Seventeen", src: "music/1st down _ SEVENTEEN.mp3" },
+    { label: "TDｺｰﾙ/Burn It", src: "music/◇TDコール_Burn It the Ground.mp3" },
+    { label: "TDｺｰﾙ/桜庭", src: "music/◇TDコール _ 桜庭.mp3" },
+    { label: "TDﾍｱｽﾌﾟﾚｰ", src: "music/◇ TD成功 _ ヘアスプレー.mp3" },
+    { label: "ﾄﾗﾎﾟﾝ/Get a Chance", src: "music/◇トラポン1Q3Q _ Get A Chance.mp3" },
+    { label: "ﾄﾗﾎﾟﾝ/Rip it up", src: "music/◇トラポン2Q4Q _ Rip it up.mp3" },
+    { label: "ｷｭｰﾃｨｰ", src: "music/TO _ キューティーハニー.mp3" },
+    { label: "Oﾅｲｽ/Cruisin'", src: "music/Oナイス _ Crusin.mp3", textColor: "red" },
+    { label: "Oﾅｲｽ/なにわ", src: "music/Oナイス _ なにわ.mp3", textColor: "red" },
+    { label: "Dﾅｲｽ/woman", src: "music/Dナイス _ woman.mp3", textColor: "blue"  },
+    { label: "Dﾅｲｽ/Wicked", src: "music/Dナイス _ Wicked.mp3", textColor: "blue"  },
     { label: "ODTO/ Shuffle", src: "music/TO_2min_Shuffle of Love.mp3" },
     { label: "OTO/Money", src: "music/TO(O)_ Money.mp3", textColor: "red" },
-    { label: "DTO/ディセンダント", src: "music/TO(D) _ ディセンダント.mp3", textColor: "blue"  },
+    { label: "DTO/ﾃﾞｨｾﾝﾀﾞﾝﾄ", src: "music/TO(D) _ ディセンダント.mp3", textColor: "blue"  },
     { label: "DTO/Million Dollar", src: "music/TO(D)Million Dollar.mp3", textColor: "blue"  },
     { label: "OD攻守交代/ACDC", src: "music/ターンオーバー(O_Dスタ) AC_DC.mp3" },
-    { label: "Oスタ①", src: "music/Ｏスタ①.mp3", textColor: "red" },
-    { label: "Oスタ②GameTime", src: "music/Oスタ② _ Game Time.mp3", textColor: "red" },
+    { label: "Oｽﾀ①", src: "music/Ｏスタ①.mp3", textColor: "red" },
+    { label: "Oｽﾀ②GameTime", src: "music/Oスタ② _ Game Time.mp3", textColor: "red" },
     { label: "Maroon", src: "music/Oダンス _ MAROON5.mp3", textColor: "red" },
     { label: "BB", src: "music/Oダンス _ BB.mp3", textColor: "red" },
     { label: "Austin", src: "music/Ｏダンス _ Austin.mp3", textColor: "red" },
@@ -135,29 +130,29 @@
     { label: "Camila", src: "music/Oダンス _ Camila.mp3", textColor: "red" },
     { label: "Motivation", src: "music/Oダンス_motivation.MP3", textColor: "red" },
     { label: "Love Sick Girl", src: "music/Oダンス_Lovesick Girls.mp3", textColor: "red" },
-    { label: "【コ】DADDY", src: "music/Oコール - DADDY(UP ver.).mp3", textColor: "red" },
-    { label: "【コ】WHIP THAT", src: "music/Oコール _ WHIP THAT3.mp3", textColor: "red" },
-    { label: "【コ】Pitbull", src: "music/Oコール _ Pitbull.mp3", textColor: "red" },
-    { label: "【コ】Shake It", src: "music/Oコール _ Shake it.mp3", textColor: "red" },
-    { label: "【コ】Jump", src: "music/Oコール _ Jump.mp3", textColor: "red" },
-    { label: "Dスタ/HOT", src: "music/Dスタート _ HOT.mp3", textColor: "blue"  },
-    { label: "Dスタ/dirty", src: "music/Dスタート _ Dirty.mp3", textColor: "blue"  },
+    { label: "【ｺ】DADDY", src: "music/Oコール - DADDY(UP ver.).mp3", textColor: "red" },
+    { label: "【ｺ】WHIP THAT", src: "music/Oコール _ WHIP THAT3.mp3", textColor: "red" },
+    { label: "【ｺ】Pitbull", src: "music/Oコール _ Pitbull.mp3", textColor: "red" },
+    { label: "【ｺ】Shake It", src: "music/Oコール _ Shake it.mp3", textColor: "red" },
+    { label: "【ｺ】Jump", src: "music/Oコール _ Jump.mp3", textColor: "red" },
+    { label: "Dｽﾀ/HOT", src: "music/Dスタート _ HOT.mp3", textColor: "blue"  },
+    { label: "Dｽﾀ/dirty", src: "music/Dスタート _ Dirty.mp3", textColor: "blue"  },
     { label: "Chap", src: "music/Dダンス _ Chap.mp3", textColor: "blue"  },
     { label: "Power", src: "music/Dダンス _ Power(音量up).mp3", textColor: "blue"  },
     { label: "Move", src: "music/Dダンス _ Move.mp3", textColor: "blue"  },
     { label: "Tambourine", src: "music/Dダンス _ Tambourine .mp3", textColor: "blue"  },
     { label: "Bon Jovi", src: "music/Dダンス _ BON JOVI(8×1カット).mp3", textColor: "blue"  },
     { label: "Dalla Dalla", src: "music/Dダンス _ Dalla Dalla.mp3", textColor: "blue"  },
-    { label: "【コ】20世紀少年", src: "music/Dコール _ 20世紀少年.mp3", textColor: "blue"  },
-    { label: "【コ】アベンジャーズ", src: "music/Dコール _ アベンジャーズ.mp3", textColor: "blue"  },
-    { label: "【コ】Clap", src: "music/Dコール _ clap.mp3", textColor: "blue"  },
-    { label: "【コ】Feeling", src: "music/Dコール _ Feeling.mp3", textColor: "blue"  },
-    { label: "【コ】ジョジョ", src: "music/Dコール _ ジョジョ.mp3", textColor: "blue"  },
-    { label: "【コ】Samurai", src: "music/Dコール _ Samurai.mp3", textColor: "blue"  },
-    { label: "【コ】Narco", src: "music/Dコール _ Narco.mp3", textColor: "blue"  },
-    { label: "【コ】マツケンEDM(new)", src: "music/Dコール _ マツケンEDM.mp3", textColor: "blue"  },
-    { label: "キックオフ/Joker", src: "music/★キックオフ _ Joker.mp3" },
-    { label: "キックオフ/Rage", src: "music/★キックオフ _ Rage.mp3" },
+    { label: "【ｺ】20世紀", src: "music/Dコール _ 20世紀少年.mp3", textColor: "blue"  },
+    { label: "【ｺ】ｱﾍﾞﾝｼﾞｬｰｽ", src: "music/Dコール _ アベンジャーズ.mp3", textColor: "blue"  },
+    { label: "【ｺ】Clap", src: "music/Dコール _ clap.mp3", textColor: "blue"  },
+    { label: "【ｺ】Feeling", src: "music/Dコール _ Feeling.mp3", textColor: "blue"  },
+    { label: "【ｺ】ｼﾞｮｼﾞｮ", src: "music/Dコール _ ジョジョ.mp3", textColor: "blue"  },
+    { label: "【ｺ】Samurai", src: "music/Dコール _ Samurai.mp3", textColor: "blue"  },
+    { label: "【ｺ】Narco", src: "music/Dコール _ Narco.mp3", textColor: "blue"  },
+    { label: "【ｺ】ﾏﾂｹﾝ", src: "music/Dコール _ マツケンEDM.mp3", textColor: "blue"  },
+    { label: "ｷｯｸｵﾌ/Joker", src: "music/★キックオフ _ Joker.mp3" },
+    { label: "ｷｯｸｵﾌ/Rage", src: "music/★キックオフ _ Rage.mp3" },
     { label: "相手TD/Another Level", src: "music/相手TD _ Another Level.mp3" },
     { label: "相手TD/heavy", src: "music/相手TD _ HEAVY.mp3" },
     { label: "相手FG/半沢", src: "music/相手FG _ 半沢直樹.mp3" },
@@ -166,12 +161,12 @@
     { label: "[負]Tokyo MER", src: "music/試合後BGM _ TOKYO MER(負).mp3" },
     { label: "花道", src: "music/【復活】花道_NFL.mp3" },
     { label: "OP", src: "music/オープニング2025春.mp3" },
-    { label: "コイントス", src: "music/◆コイントス.mp3" },
+    { label: "ｺｲﾝﾄｽ", src: "music/◆コイントス.mp3" },
     { label: "前半QT", src: "music/20250906_QT_選手紹介.mp3" },
     { label: "後半QT", src: "music/スポンサー紹介BGM①TVYOASOBIWatch me_.mp3" },
-    { label: "イナヅマ", src: "music/BTオハコ _ イナヅマダンス.mp3" },
-    { label: "ハーフ", src: "music/2025ハーフ完成版(1曲目＆2曲目).mp3" },
-    { label: "フリアピ", src: "music/FA (O) _ Head&Heart.mp3" },
+    { label: "ｲﾅﾂﾞﾏ", src: "music/BTオハコ _ イナヅマダンス.mp3" },
+    { label: "ﾊｰﾌ", src: "music/2025ハーフ完成版(1曲目＆2曲目).mp3" },
+    { label: "ﾌﾘｱﾋﾟ", src: "music/FA (O) _ Head&Heart.mp3" },
     // ここから先は必要に応じてファイルを追記してください（合計64）
   ];
 
