@@ -37,26 +37,24 @@
 
     audio { display: block; width: min(760px, 94vw); margin: 8px auto 18px; }
 
-    /* グリッド: PCは8×8、タブレットは6列、スマホは4列 */
+    /* グリッド: 端末に関係なく常に8×8 */
     .grid {
       display: grid;
-      grid-template-columns: repeat(8, 1fr);
+      grid-template-columns: repeat(8, minmax(0, 1fr));
       gap: 8px;
       width: min(820px, 96vw);
       margin: 0 auto;
     }
-    @media (max-width: 980px) { .grid { grid-template-columns: repeat(6, 1fr); } }
-    @media (max-width: 680px) { .grid { grid-template-columns: repeat(4, 1fr); } }
-
+    /* ボタンを小画面で潰れにくくする微調整（任意） */
     .sound-btn {
       appearance: none;
       border: 1px solid var(--border);
       border-radius: 12px;
       background: var(--btn);
       color: var(--btn-text);
-      padding: 10px 8px;
-      min-height: 48px;
-      font-size: 14px;
+      padding: clamp(6px, 1vw, 10px) clamp(4px, 0.8vw, 8px);
+      min-height: clamp(36px, 5vw, 48px);
+      font-size: clamp(10px, 1.6vw, 14px);
       line-height: 1.2;
       cursor: pointer;
       transition: transform .04s ease, opacity .2s ease, box-shadow .2s ease;
@@ -97,15 +95,70 @@
   // 64スロット分のトラックを定義。label=ボタン表示名、src=ファイルパス。
   // 既存の9曲を先頭に入れ、残りは未割り当て（src: ""）で作ってあります。
   const tracks = [
-    { label: "オープニング2025春", src: "music/オープニング2025春.mp3" },
-    { label: "◆2024 花道_ When Legends Rise", src: "music/◆2024 花道_ When Legends Rise.mp3" },
-    { label: "", src: "" },
-    { label: "★キックオフ _ Joker", src: "music/★キックオフ _ Joker.mp3" },
-    { label: "★キックオフ _ Rage", src: "music/★キックオフ _ Rage.mp3" },
-    { label: "BTオハコ _ イナヅマダンス", src: "music/BTオハコ _ イナヅマダンス.mp3" },
-    { label: "春ハーフ【Been like this】", src: "music/春ハーフ【Been like this】 .mp3" },
-    { label: "◆ハーフ【SAX】", src: "music/◆ハーフ【SAX】.mp3" },
-    { label: "ハーフ後BTダンス", src: "music/ハーフ後BTダンス.mp3" },
+    { label: "1st down/いきものがかり", src: "music/1st Down _ いきものがかり.mp3" },
+    { label: "1st down/Seventeen", src: "music/1st down _ SEVENTEEN.mp3" }"
+    { label: "TDコール/Burn It the Ground", src: "music/◇TDコール_Burn It the Ground.mp3" },
+    { label: "TDコール/桜庭", src: "music/TDコール _ 桜庭.mp3" },
+    { label: "TD成功/ヘアスプレー", src: "music/◇ TD成功 _ ヘアスプレー.mp3" },
+    { label: "トラポン/Get a Chance", src: "music/◇トラポン1Q3Q _ Get A Chance.mp3" },
+    { label: "トラポン/Rip it up", src: "music/◇トラポン2Q4Q _ Rip it up.mp3" },
+    { label: "ODTO (&2min)/キューティーハニー", src: "music/TO _ キューティーハニー.mp3" },
+    { label: "Oナイス/Cruisin'", src: "music/Oナイス _ Crusin.mp3" },
+    { label: "Oナイス/なにわ", src: "music/Oナイス _ なにわ.mp3" },
+    { label: "Dナイス/woman", src: "music/Dナイス _ woman.mp3.mp3" },
+    { label: "Dナイス/Wicked", src: "music/Dナイス _ Wicked.mp3" },
+    { label: "ODTO/ Shuffle of Love", src: "music/TO_2min_Shuffle of Love.mp3" },
+    { label: "OTO/Money", src: "music/TO(O)_ Money.mp3" },
+    { label: "DTO/ディセンダント", src: "music/TO(D) _ ディセンダント.mp3" },
+    { label: "DTO/Million Dollar", src: "music/TO(D)Million Dollar.mp3" },
+    { label: "OD攻守交代/ ACDC", src: "music/ターンオーバー(O_Dスタ) AC_DC.mp3" },
+    { label: "Oスタート", src: "music/Ｏスタ①.mp3" },
+    { label: "Oスタ/Game Time", src: "music/Oスタ② _ Game Time.mp3" },
+    { label: "Maroon", src: "music/Oダンス _ MAROON5.mp3" },
+    { label: "BB", src: "music/Oダンス _ BB.mp3" },
+    { label: "Austin", src: "music/Ｏダンス _ Austin.mp3" },
+    { label: "Tinie", src: "music/Oダンス _ Tinie.mp3" },
+    { label: "Tick", src: "music/Oダンス _ Tick Tick Boom.mp3" },
+    { label: "Camila", src: "music/Oダンス _ Camila.mp3" },
+    { label: "Motivation", src: "music/Oダンス_motivation.MP3" },
+    { label: "Love Sick Girl", src: "music/Oダンス_Lovesick Girls.mp3" },
+    { label: "Oコール/DADDY", src: "music/Oコール - DADDY(UP ver.).mp3" },
+    { label: "Oコール/WHIP THAT", src: "music/Oコール _ WHIP THAT3.mp3" },
+    { label: "Oコール/Pitbull", src: "music/Oコール _ Pitbull.mp3" },
+    { label: "Oコール/Shake It", src: "music/Oコール _ Shake it.mp3" },
+    { label: "Oコール/Jump", src: "music/●●.mp3" },
+    { label: "Dスタート/HOT", src: "music/●●.mp3" },
+    { label: "Dスタート/dirty", src: "music/●●.mp3" },
+    { label: "Chap", src: "music/●●.mp3" },
+    { label: "Power", src: "music/●●.mp3" },
+    { label: "Move", src: "music/●●.mp3" },
+    { label: "Tambourine", src: "music/●●.mp3" },
+    { label: "Bon Jovi", src: "music/●●.mp3" },
+    { label: "Dalla Dalla", src: "music/●●.mp3" },
+    { label: "Dコール/20世紀少年", src: "music/●●.mp3" },
+    { label: "Dコール/アベンジャーズ", src: "music/●●.mp3" },
+    { label: "Dコール/Clap", src: "music/●●.mp3" },
+    { label: "Dコール/Feeling", src: "music/●●.mp3" },
+    { label: "Dコール/ジョジョ", src: "music/●●.mp3" },
+    { label: "Dコール/Samurai", src: "music/●●.mp3" },
+    { label: "Dコール/Narco", src: "music/●●.mp3" },
+    { label: "Dコール/マツケンEDM(new)", src: "music/●●.mp3" },
+    { label: "キックオフ/Joker", src: "music/●●.mp3" },
+    { label: "キックオフ/Rage", src: "music/●●.mp3" },
+    { label: "相手TD/Another Level", src: "music/●●.mp3" },
+    { label: "相手TD/heavy", src: "music/●●.mp3" },
+    { label: "相手FG/半沢", src: "music/●●.mp3" },
+    { label: "相手FG/Stand Up", src: "music/●●.mp3" },
+    { label: "試合後【勝】/Viva La Vida", src: "music/●●.mp3" },
+    { label: "試合後【負】/Tokyo MER", src: "music/●●.mp3" },
+    { label: "花道", src: "music/●●.mp3" },
+    { label: "OP", src: "music/●●.mp3" },
+    { label: "コイントス", src: "music/●●.mp3" },
+    { label: "前半QT/選手紹介", src: "music/●●.mp3" },
+    { label: "後半QT/スポンサー紹介BGM", src: "music/●●.mp3" },
+    { label: "前後半2min/イナヅマダンス", src: "music/●●.mp3" },
+    { label: "ハーフタイム(1曲目+2曲目+退場)", src: "music/●●.mp3" },
+    { label: "フリアピ/Head & Heart", src: "music/●●.mp3" }
     // ここから先は必要に応じてファイルを追記してください（合計64）
   ];
 
