@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>8×8 サウンドボード</title>
+  <style>
+    :root{
+      --gap:10px;
+      --radius:14px;
+      --border:#334155;
+      --bg:#0b1220;          /* 背景（濃紺） */
+      --card:#121a2a;        /* ボタンのベース */
+      --card-hover:#1a2436;  /* ホバー */
+      --text:#e5e7eb;        /* 文字色 */
+      --accent:#60a5fa;      /* アクティブ時の縁取り */
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; background:var(--bg); color:var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+      -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    }
+    .wrap{height:100dvh; display:flex; flex-direction:column;}
+    header{padding:10px 14px; font-weight:700; letter-spacing:.02em; opacity:.9}
+
+    /* 8×8 固定グリッド（1画面に収める） */
+    .grid{
+      flex:1; display:grid; gap:var(--gap);
+      grid-template-columns: repeat(8, 1fr);
+      grid-template-rows: repeat(8, 1fr);
+      padding:10px; min-height:0; /* モバイルでのoverflow対策 */
+    }
+
+    /* 横長ボタン（20文字想定） */
+    .sound{
+      display:flex; align-items:center; justify-content:flex-start;
+      padding:12px 14px; width:100%; height:100%;
+      border-radius:var(--radius);
+      border:1px solid var(--border);
+      background:linear-gradient(180deg, var(--card) 0%, #0f172a 100%);
+      color:var(--text); cursor:pointer; user-select:none;
+      text-align:left; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+      font-weight:600;
+      /* 画面幅に応じて文字サイズ自動調整（20文字入る目安） */
+      font-size:clamp(12px, 1.1vw, 18px);
+      line-height:1.1;
+      transition:transform .02s ease, box-shadow .15s ease, background .15s ease, border-color .15s ease;
+      outline:none;
+    }
+    .sound:hover{ background:var(--card-hover); }
+    .sound:active{ transform:translateY(1px) scale(0.995); }
+    .sound:focus-visible{ box-shadow:0 0 0 3px color-mix(in oklab, var(--accent) 65%, transparent); }
+    .sound.playing{ border-color:var(--accent); box-shadow:0 0 0 2px color-mix(in oklab, var(--accent) 70%, transparent) inset; }
+
+    /* 小さい画面でも8列×8行は維持。縦方向に少しスクロールが出る場合あり */
+    @media (max-aspect-ratio: 3/4){
+      /* かなり縦長の端末で文字が潰れないように */
+      .sound{ font-size:clamp(11px, 1.8vw, 16px); }
+    }
+
+    footer{padding:8px 14px; opacity:.7; font-size:12px}
+    code{background:#0b1220; padding:2px 6px; border:1px solid #1f2a3a; border-radius:8px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>8×8 サウンドボード（クリック/Enter/Space対応）</header>
+    <main class="grid" id="grid" aria-label="64個のサウンドボタン" role="grid"></main>
+    <footer>音源ファイルを使う場合は各ボタンの <code>data-src</code> にURLを入れてください（mp3/ogg など）。未指定ならシンセでビープ音を鳴らします。</footer>
+  </div>
+
+  <script>
+    // ======= 設定 =======
+    // ラベル（64個）— 必要に応じて編集
+    const labels = Array.from({length:64}, (_,i)=> `ボタン ${i+1}`);
+
+    // data-src に音源URLを指定するとその音を再生。未指定はWebAudioのシンセ音。
+    // 例） customSounds[0] = "sounds/kick.mp3"; // ボタン1
+    const customSounds = Array(64).fill(null);
+
+    // シンセの基本周波数（ボタンごとに少しずつ変化）
+    const baseHz = 330; // ミドル域で聞きやすい
+
+    // ======= UI生成 =======
+    const grid = document.getElementById('grid');
+
+    labels.forEach((label, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'sound';
+      btn.type = 'button';
+      btn.role = 'gridcell';
+      btn.setAttribute('aria-label', `${label} の再生`);
+      btn.dataset.index = idx;
+      if (customSounds[idx]) btn.dataset.src = customSounds[idx];
+      btn.textContent = label;
+      grid.appendChild(btn);
+    });
+
+    // ======= オーディオまわり =======
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    let ctx; // 遅延初期化（初回再生時に作る）
+    const cachedBuffers = new Map();
+
+    async function fetchAudioBuffer(url){
+      if(cachedBuffers.has(url)) return cachedBuffers.get(url);
+      const res = await fetch(url);
+      const arr = await res.arrayBuffer();
+      if(!ctx) ctx = new AudioContext();
+      const buf = await ctx.decodeAudioData(arr);
+      cachedBuffers.set(url, buf);
+      return buf;
+    }
+
+    function playBuffer(buf){
+      if(!ctx) ctx = new AudioContext();
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      src.connect(ctx.destination);
+      src.start();
+      return src;
+    }
+
+    // シンセ（ワンショット）
+    function playBeep(i){
+      if(!ctx) ctx = new AudioContext();
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = 'sine';
+      // ボタン番号で周波数をばらけさせる（20文字のラベルでも聞き分けやすい）
+      const freq = baseHz * (1 + (i % 16) * 0.03);
+      o.frequency.setValueAtTime(freq, ctx.currentTime);
+      g.gain.setValueAtTime(0.001, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.4, ctx.currentTime + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.25); // 0.25秒で減衰
+      o.connect(g).connect(ctx.destination);
+      o.start();
+      o.stop(ctx.currentTime + 0.28);
+      return o;
+    }
+
+    // ======= 再生処理 =======
+    function setPlaying(btn, on){
+      btn.classList.toggle('playing', !!on);
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    }
+
+    async function handlePlay(btn){
+      const i = Number(btn.dataset.index);
+      setPlaying(btn, true);
+      try{
+        if(btn.dataset.src){
+          const buf = await fetchAudioBuffer(btn.dataset.src);
+          const node = playBuffer(buf);
+          node.onended = () => setPlaying(btn, false);
+        }else{
+          const node = playBeep(i);
+          // WebAudio Oscillatorには onended がないため、見た目だけタイマーで戻す
+          setTimeout(()=> setPlaying(btn, false), 300);
+        }
+      }catch(e){
+        console.error(e);
+        setPlaying(btn, false);
+        alert('音源の読み込みに失敗しました');
+      }
+    }
+
+    // クリック/Enter/Space対応
+    grid.addEventListener('click', (e)=>{
+      const btn = e.target.closest('button.sound');
+      if(btn) handlePlay(btn);
+    });
+    grid.addEventListener('keydown', (e)=>{
+      const btn = e.target.closest('button.sound');
+      if(!btn) return;
+      if(e.code === 'Space' || e.code === 'Enter'){
+        e.preventDefault();
+        handlePlay(btn);
+      }
+    });
+
+    // iOSなどで初回はユーザ操作後でないとAudioContextが再生できない場合があるための対策
+    window.addEventListener('pointerdown', () => {
+      if(!ctx){ try{ ctx = new AudioContext(); }catch(_){} }
+    }, { once:true });
+  </script>
+</body>
+</html>
