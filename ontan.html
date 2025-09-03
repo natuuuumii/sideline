@@ -47,25 +47,38 @@
     }
     /* ボタンを小画面で潰れにくくする微調整（任意） */
     .sound-btn {
-      appearance: none;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: var(--btn);
-      color: var(--btn-text);
-      padding: clamp(6px, 1vw, 10px) clamp(4px, 0.8vw, 8px);
-      min-height: clamp(36px, 5vw, 48px);
-      font-size: clamp(10px, 1.6vw, 14px);
-      line-height: 1.2;
-      cursor: pointer;
-      transition: transform .04s ease, opacity .2s ease, box-shadow .2s ease;
-      word-break: break-word;
+    appearance: none;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: #fff;        /* ← 白背景に */
+    color: #111;             /* ← 黒文字に */
+    padding: clamp(6px, 1vw, 10px) clamp(4px, 0.8vw, 8px);
+    min-height: clamp(36px, 5vw, 48px);
+    font-size: clamp(10px, 1.6vw, 14px);
+    line-height: 1.2;
+    cursor: pointer;
+    transition: transform .04s ease, opacity .2s ease, box-shadow .2s ease, background .2s ease;
+    word-break: break-word;
     }
     .sound-btn:hover { opacity: .92; }
     .sound-btn:active { transform: translateY(1px); }
-    .sound-btn.alt { background: var(--btn-alt); }
-    .sound-btn.alt2 { background: var(--btn-alt2); }
-    .sound-btn.playing { outline: 3px solid var(--playing); box-shadow: 0 0 0 2px #fff inset; }
-    .sound-btn[disabled] { cursor: not-allowed; opacity: .55; filter: grayscale(.2); }
+    /* alt/alt2 は色替え不要なら無効化してOK（残しても実害なし） */
+    .sound-btn.alt, .sound-btn.alt2 { background: #fff; }
+
+    /* 再生中の見た目（白地でも見えるように） */
+    .sound-btn.playing {
+    outline: 3px solid var(--playing);
+    box-shadow: 0 0 0 2px #fff inset;
+    }
+
+    /* 未割り当ては薄グレー背景にして区別 */
+.sound-btn[disabled] {
+  background: #f3f4f6;
+  color: #999;
+  cursor: not-allowed;
+  opacity: 1;              /* ← くすませすぎない */
+  filter: none;
+}
 
     .legend { width: min(820px, 96vw); margin: 14px auto 0; font-size: 12px; color: #456; }
     .legend code { background: #fff; padding: 2px 6px; border-radius: 6px; border: 1px solid var(--border); }
@@ -95,7 +108,7 @@
   // 64スロット分のトラックを定義。label=ボタン表示名、src=ファイルパス。
   // 既存の9曲を先頭に入れ、残りは未割り当て（src: ""）で作ってあります。
   const tracks = [
-    { label: "1st down/いきものがかり", src: "music/1st Down _ いきものがかり.mp3" },
+    { label: "1st down/いきもの", src: "music/1st Down _ いきものがかり.mp3" },
     { label: "1st down/Seventeen", src: "music/1st down _ SEVENTEEN.mp3" },
     { label: "TDコール/Burn It the Ground", src: "music/◇TDコール_Burn It the Ground.mp3" },
     { label: "TDコール/桜庭", src: "music/TDコール _ 桜庭.mp3" },
@@ -103,10 +116,10 @@
     { label: "トラポン/Get a Chance", src: "music/◇トラポン1Q3Q _ Get A Chance.mp3" },
     { label: "トラポン/Rip it up", src: "music/◇トラポン2Q4Q _ Rip it up.mp3" },
     { label: "ODTO (&2min)/キューティーハニー", src: "music/TO _ キューティーハニー.mp3" },
-    { label: "Oナイス/Cruisin'", src: "music/Oナイス _ Crusin.mp3" },
-    { label: "Oナイス/なにわ", src: "music/Oナイス _ なにわ.mp3" },
-    { label: "Dナイス/woman", src: "music/Dナイス _ woman.mp3.mp3" },
-    { label: "Dナイス/Wicked", src: "music/Dナイス _ Wicked.mp3" },
+    { label: "Oナイス/Cruisin'", src: "music/Oナイス _ Crusin.mp3", textColor: "red" },
+    { label: "Oナイス/なにわ", src: "music/Oナイス _ なにわ.mp3", textColor: "red" },
+    { label: "Dナイス/woman", src: "music/Dナイス _ woman.mp3", textColor: "blue"  },
+    { label: "Dナイス/Wicked", src: "music/Dナイス _ Wicked.mp3", textColor: "blue"  },
     { label: "ODTO/ Shuffle of Love", src: "music/TO_2min_Shuffle of Love.mp3" },
     { label: "OTO/Money", src: "music/TO(O)_ Money.mp3" },
     { label: "DTO/ディセンダント", src: "music/TO(D) _ ディセンダント.mp3" },
@@ -190,7 +203,16 @@
       btn.type = 'button';
       btn.setAttribute('aria-label', t.label || `ボタン ${i+1}`);
       btn.textContent = t.label || `ボタン ${i+1}`;
-
+      
+    /* ★ここを追加：特定ボタンの文字色上書き ★ */
+    if (t.textColor) {
+      btn.style.color = t.textColor;    // "red" / "blue" / "#hex" でもOK
+      // 文字色を変えたボタンは視認性のためボーダーも少し濃く
+      btn.style.borderColor = 'rgba(0,0,0,0.18)';
+      // もし背景も薄く色味つけたいなら ↓ を有効化
+      // btn.style.background = t.textColor === 'red' ? '#fff5f5' : '#f5f8ff';
+    }
+    
       if (!t.src) {
         btn.disabled = true;
         btn.title = '未割り当て';
