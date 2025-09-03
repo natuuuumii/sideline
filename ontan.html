@@ -1,189 +1,188 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>8×8 サウンドボード</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>BTC SIDELINE【64ボタン版】</title>
+  <link rel="icon" type="image/png" href="images/favicon.jpeg" />
+  <link rel="apple-touch-icon" href="images/favicon.jpeg" />
   <style>
-    :root{
-      --gap:10px;
-      --radius:14px;
-      --border:#334155;
-      --bg:#0b1220;          /* 背景（濃紺） */
-      --card:#121a2a;        /* ボタンのベース */
-      --card-hover:#1a2436;  /* ホバー */
-      --text:#e5e7eb;        /* 文字色 */
-      --accent:#60a5fa;      /* アクティブ時の縁取り */
+    :root {
+      --bg: #f0f8ff;
+      --btn: #3d6aad;
+      --btn-alt: #71b4c7;
+      --btn-alt2: #74c4c0;
+      --btn-text: #fff;
+      --playing: #d1ecf1;
+      --border: rgba(0,0,0,0.08);
     }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0; background:var(--bg); color:var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
-      -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
-    }
-    .wrap{height:100dvh; display:flex; flex-direction:column;}
-    header{padding:10px 14px; font-weight:700; letter-spacing:.02em; opacity:.9}
 
-    /* 8×8 固定グリッド（1画面に収める） */
-    .grid{
-      flex:1; display:grid; gap:var(--gap);
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: Arial, system-ui, -apple-system, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+      background-color: var(--bg);
+      margin: 0;
+      padding: 16px;
+      color: #123;
+    }
+
+    .page-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+    .home-link { color: #3d6aad; text-decoration: none; font-weight: bold; }
+    .home-link:hover { text-decoration: underline; }
+
+    h3 { text-align: center; margin: 10px 0 16px; }
+
+    #currentTrack { text-align: center; margin: 10px 0 6px; font-size: 15px; }
+
+    audio { display: block; width: min(760px, 94vw); margin: 8px auto 18px; }
+
+    /* グリッド: PCは8×8、タブレットは6列、スマホは4列 */
+    .grid {
+      display: grid;
       grid-template-columns: repeat(8, 1fr);
-      grid-template-rows: repeat(8, 1fr);
-      padding:10px; min-height:0; /* モバイルでのoverflow対策 */
+      gap: 8px;
+      width: min(820px, 96vw);
+      margin: 0 auto;
     }
+    @media (max-width: 980px) { .grid { grid-template-columns: repeat(6, 1fr); } }
+    @media (max-width: 680px) { .grid { grid-template-columns: repeat(4, 1fr); } }
 
-    /* 横長ボタン（20文字想定） */
-    .sound{
-      display:flex; align-items:center; justify-content:flex-start;
-      padding:12px 14px; width:100%; height:100%;
-      border-radius:var(--radius);
-      border:1px solid var(--border);
-      background:linear-gradient(180deg, var(--card) 0%, #0f172a 100%);
-      color:var(--text); cursor:pointer; user-select:none;
-      text-align:left; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-      font-weight:600;
-      /* 画面幅に応じて文字サイズ自動調整（20文字入る目安） */
-      font-size:clamp(12px, 1.1vw, 18px);
-      line-height:1.1;
-      transition:transform .02s ease, box-shadow .15s ease, background .15s ease, border-color .15s ease;
-      outline:none;
+    .sound-btn {
+      appearance: none;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--btn);
+      color: var(--btn-text);
+      padding: 10px 8px;
+      min-height: 48px;
+      font-size: 14px;
+      line-height: 1.2;
+      cursor: pointer;
+      transition: transform .04s ease, opacity .2s ease, box-shadow .2s ease;
+      word-break: break-word;
     }
-    .sound:hover{ background:var(--card-hover); }
-    .sound:active{ transform:translateY(1px) scale(0.995); }
-    .sound:focus-visible{ box-shadow:0 0 0 3px color-mix(in oklab, var(--accent) 65%, transparent); }
-    .sound.playing{ border-color:var(--accent); box-shadow:0 0 0 2px color-mix(in oklab, var(--accent) 70%, transparent) inset; }
+    .sound-btn:hover { opacity: .92; }
+    .sound-btn:active { transform: translateY(1px); }
+    .sound-btn.alt { background: var(--btn-alt); }
+    .sound-btn.alt2 { background: var(--btn-alt2); }
+    .sound-btn.playing { outline: 3px solid var(--playing); box-shadow: 0 0 0 2px #fff inset; }
+    .sound-btn[disabled] { cursor: not-allowed; opacity: .55; filter: grayscale(.2); }
 
-    /* 小さい画面でも8列×8行は維持。縦方向に少しスクロールが出る場合あり */
-    @media (max-aspect-ratio: 3/4){
-      /* かなり縦長の端末で文字が潰れないように */
-      .sound{ font-size:clamp(11px, 1.8vw, 16px); }
-    }
-
-    footer{padding:8px 14px; opacity:.7; font-size:12px}
-    code{background:#0b1220; padding:2px 6px; border:1px solid #1f2a3a; border-radius:8px}
+    .legend { width: min(820px, 96vw); margin: 14px auto 0; font-size: 12px; color: #456; }
+    .legend code { background: #fff; padding: 2px 6px; border-radius: 6px; border: 1px solid var(--border); }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>8×8 サウンドボード（クリック/Enter/Space対応）</header>
-    <main class="grid" id="grid" aria-label="64個のサウンドボタン" role="grid"></main>
-    <footer>音源ファイルを使う場合は各ボタンの <code>data-src</code> にURLを入れてください（mp3/ogg など）。未指定ならシンセでビープ音を鳴らします。</footer>
-  </div>
+  <header class="page-header">
+    <a href="index.html" class="home-link">🏠 TOPページに戻る</a>
+    <span style="opacity:.6;font-size:12px">/ 64 Button Soundboard</span>
+  </header>
 
-  <script>
-    // ======= 設定 =======
-    // ラベル（64個）— 必要に応じて編集
-    const labels = Array.from({length:64}, (_,i)=> `ボタン ${i+1}`);
+  <h3>🎵 BTC SIDELINE【その他｜64ボタン】</h3>
 
-    // data-src に音源URLを指定するとその音を再生。未指定はWebAudioのシンセ音。
-    // 例） customSounds[0] = "sounds/kick.mp3"; // ボタン1
-    const customSounds = Array(64).fill(null);
+  <div id="currentTrack">再生中: なし</div>
+  <!-- 既存ページの audioPlayer を流用 -->
+  <audio id="audioPlayer" controls></audio>
 
-    // シンセの基本周波数（ボタンごとに少しずつ変化）
-    const baseHz = 330; // ミドル域で聞きやすい
+  <!-- 8×8＝64ボタンを自動生成 -->
+  <div id="grid" class="grid" aria-label="サウンドボード 64ボタン"></div>
 
-    // ======= UI生成 =======
-    const grid = document.getElementById('grid');
+  <p class="legend">
+    🔧 未割り当てのボタンはグレー表示になります。曲を割り当てるには <code>tracks[i].src</code> にファイルパスを入れてください。
+  </p>
 
-    labels.forEach((label, idx) => {
+<script>
+  // --- 設定ここから -------------------------------------------------------
+  // 64スロット分のトラックを定義。label=ボタン表示名、src=ファイルパス。
+  // 既存の9曲を先頭に入れ、残りは未割り当て（src: ""）で作ってあります。
+  const tracks = [
+    { label: "オープニング2025春", src: "music/オープニング2025春.mp3" },
+    { label: "◆2024 花道_ When Legends Rise", src: "music/◆2024 花道_ When Legends Rise.mp3" },
+    { label: "", src: "" },
+    { label: "★キックオフ _ Joker", src: "music/★キックオフ _ Joker.mp3" },
+    { label: "★キックオフ _ Rage", src: "music/★キックオフ _ Rage.mp3" },
+    { label: "BTオハコ _ イナヅマダンス", src: "music/BTオハコ _ イナヅマダンス.mp3" },
+    { label: "春ハーフ【Been like this】", src: "music/春ハーフ【Been like this】 .mp3" },
+    { label: "◆ハーフ【SAX】", src: "music/◆ハーフ【SAX】.mp3" },
+    { label: "ハーフ後BTダンス", src: "music/ハーフ後BTダンス.mp3" },
+    // ここから先は必要に応じてファイルを追記してください（合計64）
+  ];
+
+  // 64個に満たない場合は未割り当てスロットで埋める
+  while (tracks.length < 64) {
+    const idx = tracks.length + 1;
+    tracks.push({ label: `未割り当て ${idx}`, src: "" });
+  }
+
+  // --- UI生成 --------------------------------------------------------------
+  const grid = document.getElementById('grid');
+  const audio = document.getElementById('audioPlayer');
+  const currentLabel = document.getElementById('currentTrack');
+
+  let currentIdx = -1;
+
+  function renderButtons() {
+    grid.innerHTML = '';
+
+    tracks.forEach((t, i) => {
       const btn = document.createElement('button');
-      btn.className = 'sound';
+      btn.className = 'sound-btn';
+
+      // 2,3列目だけ色替えなど好みで（視認性UP）
+      if (i % 8 === 1) btn.classList.add('alt');
+      if (i % 8 === 2) btn.classList.add('alt2');
+
+      btn.id = `btn-${i}`;
       btn.type = 'button';
-      btn.role = 'gridcell';
-      btn.setAttribute('aria-label', `${label} の再生`);
-      btn.dataset.index = idx;
-      if (customSounds[idx]) btn.dataset.src = customSounds[idx];
-      btn.textContent = label;
+      btn.setAttribute('aria-label', t.label || `ボタン ${i+1}`);
+      btn.textContent = t.label || `ボタン ${i+1}`;
+
+      if (!t.src) {
+        btn.disabled = true;
+        btn.title = '未割り当て';
+      } else {
+        btn.addEventListener('click', () => playIndex(i));
+      }
+
       grid.appendChild(btn);
     });
+  }
 
-    // ======= オーディオまわり =======
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    let ctx; // 遅延初期化（初回再生時に作る）
-    const cachedBuffers = new Map();
+  function playIndex(i) {
+    const track = tracks[i];
+    if (!track || !track.src) return;
 
-    async function fetchAudioBuffer(url){
-      if(cachedBuffers.has(url)) return cachedBuffers.get(url);
-      const res = await fetch(url);
-      const arr = await res.arrayBuffer();
-      if(!ctx) ctx = new AudioContext();
-      const buf = await ctx.decodeAudioData(arr);
-      cachedBuffers.set(url, buf);
-      return buf;
+    // 再生中ハイライトのリセット
+    if (currentIdx >= 0) {
+      const prev = document.getElementById(`btn-${currentIdx}`);
+      prev && prev.classList.remove('playing');
     }
 
-    function playBuffer(buf){
-      if(!ctx) ctx = new AudioContext();
-      const src = ctx.createBufferSource();
-      src.buffer = buf;
-      src.connect(ctx.destination);
-      src.start();
-      return src;
-    }
+    currentIdx = i;
 
-    // シンセ（ワンショット）
-    function playBeep(i){
-      if(!ctx) ctx = new AudioContext();
-      const o = ctx.createOscillator();
-      const g = ctx.createGain();
-      o.type = 'sine';
-      // ボタン番号で周波数をばらけさせる（20文字のラベルでも聞き分けやすい）
-      const freq = baseHz * (1 + (i % 16) * 0.03);
-      o.frequency.setValueAtTime(freq, ctx.currentTime);
-      g.gain.setValueAtTime(0.001, ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.4, ctx.currentTime + 0.01);
-      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.25); // 0.25秒で減衰
-      o.connect(g).connect(ctx.destination);
-      o.start();
-      o.stop(ctx.currentTime + 0.28);
-      return o;
-    }
-
-    // ======= 再生処理 =======
-    function setPlaying(btn, on){
-      btn.classList.toggle('playing', !!on);
-      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
-    }
-
-    async function handlePlay(btn){
-      const i = Number(btn.dataset.index);
-      setPlaying(btn, true);
-      try{
-        if(btn.dataset.src){
-          const buf = await fetchAudioBuffer(btn.dataset.src);
-          const node = playBuffer(buf);
-          node.onended = () => setPlaying(btn, false);
-        }else{
-          const node = playBeep(i);
-          // WebAudio Oscillatorには onended がないため、見た目だけタイマーで戻す
-          setTimeout(()=> setPlaying(btn, false), 300);
-        }
-      }catch(e){
-        console.error(e);
-        setPlaying(btn, false);
-        alert('音源の読み込みに失敗しました');
-      }
-    }
-
-    // クリック/Enter/Space対応
-    grid.addEventListener('click', (e)=>{
-      const btn = e.target.closest('button.sound');
-      if(btn) handlePlay(btn);
-    });
-    grid.addEventListener('keydown', (e)=>{
-      const btn = e.target.closest('button.sound');
-      if(!btn) return;
-      if(e.code === 'Space' || e.code === 'Enter'){
-        e.preventDefault();
-        handlePlay(btn);
-      }
+    audio.src = track.src;
+    audio.play().catch(err => {
+      console.error('再生エラー:', err);
     });
 
-    // iOSなどで初回はユーザ操作後でないとAudioContextが再生できない場合があるための対策
-    window.addEventListener('pointerdown', () => {
-      if(!ctx){ try{ ctx = new AudioContext(); }catch(_){} }
-    }, { once:true });
-  </script>
+    const nowBtn = document.getElementById(`btn-${i}`);
+    nowBtn && nowBtn.classList.add('playing');
+
+    const fileName = decodeURIComponent(track.src.split('/').pop());
+    currentLabel.textContent = `再生中: ${fileName}`;
+  }
+
+  // 曲が終わったらハイライトを外す（またはそのままでもOK）
+  audio.addEventListener('ended', () => {
+    const nowBtn = document.getElementById(`btn-${currentIdx}`);
+    nowBtn && nowBtn.classList.remove('playing');
+    currentIdx = -1;
+    currentLabel.textContent = '再生中: なし';
+  });
+
+  // 初期化
+  renderButtons();
+</script>
 </body>
 </html>
