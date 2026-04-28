@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>BTC SIDELINE全曲再生</title>
+  
+  <!-- ファビコン -->
+  <link rel="icon" type="image/png" href="images/favicon.jpeg">
+
+  <!-- iPhone/iPad用ホーム画面アイコン -->
+  <link rel="apple-touch-icon" href="images/favicon.jpeg">
+  
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f8ff;
+      text-align: center;
+      padding: 20px;
+      box-sizing: border-box;
+      touch-action: manipulation;
+    }
+
+    audio {
+    width: 90%;
+    max-width: 500px;
+    margin: 20px auto 0;
+    display: block;
+    }
+
+    .button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin: auto;
+    width: 400px;
+    }
+
+    .button-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 1px;
+    width: 100%;
+    }
+    
+    .button-row.full-width button {
+    width: 100%;
+    }
+    
+    .button-row.third-width button {
+    flex: 1 1 30%;
+    min-width: 90px;
+    }
+
+    button {
+    padding: 10px 15px;
+    font-size: 16px;
+    border: none;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    flex: 1 1 40%;
+    min-width: 120px; /* 必要に応じて調整 */
+    box-sizing: border-box;
+    }
+
+    button:hover {
+      opacity: 0.85;
+    }
+
+    .btn-start {
+      background-color: #3d6aad;
+      width: 100%;
+    }
+    .btn-prev { background-color: #71b4c7; }
+    .btn-next { background-color: #71b4c7; }
+    .btn-restart { background-color: #74c4c0; }
+    .btn-rewind { background-color: #74c4c0; }
+    .btn-forward { background-color: #74c4c0; }
+
+    #currentTrack, #message, #finishMessage {
+      margin-top: 15px;
+      font-size: 16px;
+      color: #333;
+    }
+
+    #finishMessage {
+      color: red;
+      font-weight: bold;
+    }
+
+    #playlist {
+      margin-top: 60px;
+      text-align: left;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      background: #fff;
+      padding: 10px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .track-item {
+        padding: 5px;
+        word-break: break-all; /* 長い単語（ファイル名）でも折り返す */
+        overflow-wrap: break-word; /* 補足：単語を折り返し対象に */
+    }
+
+    .playing {
+      background-color: #d1ecf1;
+      font-weight: bold;
+    }
+    
+    @media (max-width: 480px) {
+    .track-item {
+      font-size: 14px;
+      padding: 8px 5px;
+    }
+
+    #playlist {
+      padding: 5px;
+    }
+
+    .button-container {
+      width: 100%; /* ボタンも画面に収まりやすく */
+    }
+
+    button {
+      font-size: 14px;
+      padding: 8px;
+      min-width: 100px;
+    }
+    }
+    
+    .page-header {
+      padding: 10px;
+      text-align: left;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+
+    .page-header .home-link {
+      color: #3d6aad;
+      font-size: 16px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .page-header .home-link:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 480px) {
+      .page-header .home-link {
+      font-size: 14px;
+    }
+    }
+    
+  </style>
+</head>
+<body>
+  <header class="page-header">
+  <a href="index.html" class="home-link">🏠 TOPページに戻る</a>
+  </header>
+  <h3>🎵BTC SIDELINE全曲再生🎵</h3>
+
+  <div class="button-container">
+  <!-- ① 1段目: 横長ボタン -->
+  <div class="button-row full-width">
+    <button class="btn-start" onclick="startPlaylist()">▶ 再生</button>
+  </div>
+
+  <!-- ② 2段目: 半分ずつ -->
+  <div class="button-row half-width">
+    <button class="btn-prev" onclick="playPrevious()">🔙 前の曲</button>
+    <button class="btn-next" onclick="playNext()">次の曲 🔜</button>
+  </div>
+
+  <!-- ③ 3段目: 3分割 -->
+  <div class="button-row third-width">
+    <button class="btn-rewind" onclick="rewind(5)">⏪ 5秒戻す</button>
+    <button class="btn-restart" onclick="restartCurrent()">🔄 頭から</button>
+    <button class="btn-forward" onclick="forward(5)">5秒進む ⏩</button>
+  </div>
+  </div>
+
+  <div id="currentTrack">再生中: なし</div>
+  <div id="message"></div>
+  <div id="finishMessage"></div>
+
+  <audio id="audioPlayer" controls></audio>
+
+  <div id="playlist"></div>
+
+  <script>
+    const musicList = [
+      "music/◆Opening(DITA)2025.mp3",
+      "music/【復活】花道_NFL(空白あり).mp3",
+      "music/◆コイントス.mp3",
+      "music/★キックオフ_Joker.mp3",
+      "music/★キックオフ_Rage.mp3",
+      "music/Oスタ①.mp3",
+      "music/Oスタ②_GameTime.mp3",
+      "music/Oコール-DADDY.mp3",
+      "music/Oコール_Jump.mp3",
+      "music/Oコール_Pitbull.mp3",
+      "music/Oコール_Shakeit.mp3",
+      "music/Oコール_WHIPTHAT3.mp3",
+      "music/Oダンス_Austin.mp3",
+      "music/Oダンス_BB.mp3",
+      "music/Oダンス_Camila.mp3",
+      "music/Oダンス_LovesickGirls.mp3",
+      "music/Oダンス_MAROON5.mp3",
+      "music/Oダンス_motivation.mp3(音量up).mp3",
+      "music/Oダンス_TickTickBoom.mp3",
+      "music/Oダンス_Tinie.mp3",
+      "music/Oナイス_Crusin.mp3",
+      "music/Oナイス_なにわ.mp3",
+      "music/1stdown_SEVENTEEN.mp3",
+      "music/1stDown_いきものがかり.mp3",
+      "music/◇TDコール_BurnIttheGround.mp3",
+      "music/◇TDコール_桜庭.mp3",
+      "music/◇TD成功_ヘアスプレー.mp3",
+      "music/◇トラポン1Q3Q_青いイナズマ(復刻).mp3",
+      "music/◇トラポン2Q4Q_Ripitup.mp3",
+      "music/ターンオーバー(O_Dスタ)AC_DC.mp3",
+      "music/Dスタート_Dirty.mp3",
+      "music/Dスタート_HOT.mp3",      
+      "music/Dコール_20世紀少年.mp3",
+      "music/Dコール_clap.mp3",
+      "music/Dコール_Feeling.mp3",
+      "music/Dコール_Narco.mp3",
+      "music/Dコール_Samurai.mp3",
+      "music/Dコール_Winter.mp3",
+      "music/Dコール_アベンジャーズ.mp3",
+      "music/Dコール_ジョジョ.mp3",
+      "music/Dコール_マツケンEDM.mp3",
+      "music/Dダンス_Antiflagile.mp3",
+      "music/Dダンス_BONJOVI.mp3",
+      "music/Dダンス_Chap.mp3",
+      "music/Dダンス_DallaDalla.mp3",
+      "music/Dダンス_Move.mp3",
+      "music/Dダンス_Power.mp3",
+      "music/Dダンス_Tambourine.mp3",
+      "music/Dナイス_volare.mp3",
+      "music/Dナイス_Wicked.mp3",
+      "music/相手FG_Gamechanger.mp3",
+      "music/相手FG_Turnitup.mp3",
+      "music/相手TD_AnotherLevel.mp3",
+      "music/相手TD_Breakout.mp3",
+      "music/TO(2min)_ShuffleofLove.mp3",
+      "music/TO(2min)_キューティーハニー.mp3",
+      "music/TO(D)MillionDollar.mp3",
+      "music/TO(D)_ディセンダント.mp3",
+      "music/TO(O)_Money.mp3",
+      "music/0509QT_選手紹介.mp3",
+      "music/【スポンサー紹介③】JanetJackson.mp3",
+      "music/◆2026春ハーフ〜BTダンス_v02.mp3",
+      "music/FA(O)_Head&Heart.mp3",
+      "music/☆オハコ_イナズマダンス(2026).mp3",
+      "music/使用場面未定_STANDUP.mp3",
+      "music/試合終了_Dreamers.mp3"
+    ]; 
+
+    let playedTracks = [];
+    let currentIndex = -1;
+    let playlistOrder = [];
+    const audioPlayer = document.getElementById("audioPlayer");
+    const messageDiv = document.getElementById("message");
+    const finishMessageDiv = document.getElementById("finishMessage");
+    const currentTrackDiv = document.getElementById("currentTrack");
+    const playlistDiv = document.getElementById("playlist");
+
+    function shuffle(array) {
+        let currentIndex = array.length;
+        let randomIndex;
+
+        while (currentIndex !== 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+
+        [array[currentIndex], array[randomIndex]] = [
+        array[randomIndex],
+        array[currentIndex]
+        ];
+        }
+        return array;
+    }
+    
+        window.onload = function() {
+        playlistOrder = [...musicList]; // 最初に順番通りに入れて
+        renderPlaylist(); // 表示しておく
+    };
+
+        function startPlaylist() {
+        resetPlaylist();
+        playlistOrder = [...musicList]; // ランダムにしない！
+        renderPlaylist();
+        playNext(); // 上から順に再生
+    }
+
+    function playNext() {
+      if (currentIndex + 1 >= playlistOrder.length) {
+        finishMessageDiv.innerText = "Finish";
+        return;
+      }
+      currentIndex++;
+      playTrack(playlistOrder[currentIndex]);
+    }
+
+    function playPrevious() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        playTrack(playlistOrder[currentIndex]);
+      }
+    }
+
+    function restartCurrent() {
+      if (currentIndex >= 0) {
+        audioPlayer.currentTime = 0;
+        audioPlayer.play();
+      }
+    }
+
+    function resetPlaylist() {
+      playedTracks = [];
+      currentIndex = -1;
+      playlistOrder = [];
+      messageDiv.innerText = "";
+      finishMessageDiv.innerText = "";
+      currentTrackDiv.innerText = "再生中: なし";
+      audioPlayer.pause();
+      audioPlayer.currentTime = 0;
+      audioPlayer.src = "";  // オーディオを完全にリセット
+      playlistDiv.innerHTML = "";
+    }
+
+    function playTrack(track) {
+      audioPlayer.src = track;
+      audioPlayer.play();
+      const fileName = track.split("/").pop(); // パスからファイル名だけ抽出
+      currentTrackDiv.innerText = `再生中: ${fileName}`;
+      // DOM更新を待ってからハイライト（スマホでのズレ対策）
+      setTimeout(() => highlightTrack(track), 30);
+    }
+
+    function rewind(seconds) {
+      audioPlayer.currentTime = Math.max(audioPlayer.currentTime - seconds, 0);
+    }
+
+    function forward(seconds) {
+      audioPlayer.currentTime = Math.min(audioPlayer.currentTime + seconds, audioPlayer.duration);
+    }
+
+    audioPlayer.onended = function() {
+      playNext();
+    };
+
+    function renderPlaylist() {
+      playlistDiv.innerHTML = "";
+      playlistOrder.forEach((track, index) => {
+        const div = document.createElement("div");
+        div.className = "track-item";
+        div.id = `track-${index}`;
+        div.textContent = track.split("/").pop(); // ファイル名だけにする
+        
+        // 🔽 クリックでその曲を再生
+        div.addEventListener("click", () => {
+        currentIndex = index; // 現在のインデックスを更新
+        playTrack(track);
+        });
+    
+        playlistDiv.appendChild(div);
+      });
+    }
+
+    function highlightTrack(currentTrack) {
+     // 全部消す
+        document.querySelectorAll(".track-item").forEach((div) => {
+        div.classList.remove("playing");
+        });
+
+     // インデックスベースで確実に追加
+        const index = playlistOrder.findIndex((track) => track === currentTrack);
+        const div = document.getElementById(`track-${index}`);
+        if (div) {
+                div.classList.add("playing");
+        }
+    }
+  </script>
+</body>
+</html>
