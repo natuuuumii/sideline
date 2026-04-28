@@ -299,10 +299,19 @@
     };
 
         function startPlaylist() {
-        resetPlaylist();
-        playlistOrder = [...musicList]; // ランダムにしない！
-        renderPlaylist();
-        playNext(); // 上から順に再生
+          finishMessageDiv.innerText = "";
+
+            // まだ何も選択してない場合だけ、最初の曲を再生
+            if (currentIndex === -1) {
+              playlistOrder = [...musicList];
+              renderPlaylist();
+              currentIndex = 0;
+              playTrack(playlistOrder[currentIndex]);
+              return;
+            }
+
+            // 選択中の曲を「今の位置」から再生
+            audioPlayer.play();
     }
 
     function playNext() {
